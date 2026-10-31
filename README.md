@@ -19,6 +19,8 @@ A full-stack booking platform for private luxury theatres. Customers browse thea
 
 ## Quick start
 
+> **New to the project?** Follow the step-by-step **[Setup Guide](./SETUP_GUIDE.md)**. It covers installing Node.js and PostgreSQL, creating the database (pgAdmin or command line), configuring `.env.local` and troubleshooting.
+
 **Prerequisites:** Node.js 20.19+ and PostgreSQL 14+, either local or via Docker.
 
 ```bash
@@ -41,7 +43,7 @@ createdb -U postgres luxe_screens
 Create the tables, load sample data and run:
 
 ```bash
-npm run db:migrate   # applies prisma/migrations
+npm run db:deploy    # applies prisma/migrations
 npm run db:seed      # 5 locations, 6 theatres, 24 slots, 12 add-ons, 4 coupons
 npm run dev          # http://localhost:3000
 ```
