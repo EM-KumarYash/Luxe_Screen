@@ -14,7 +14,7 @@ async function CopyrightYear() {
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-ink-900">
+    <footer className="border-t border-white/5 bg-ink-900 print:hidden">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div className="space-y-4">
           <Logo />
@@ -44,7 +44,10 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-zinc-400">
             <li className="flex items-center gap-2">
               <Phone aria-hidden className="size-4 text-gold-400" />
-              <a href={`tel:${siteConfig.phone.replace(/\s/g, "")}`} className="hover:text-gold-300">
+              <a
+                href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
+                className="hover:text-gold-300"
+              >
                 {siteConfig.phone}
               </a>
             </li>
