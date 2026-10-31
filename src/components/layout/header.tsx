@@ -11,8 +11,13 @@ import { cn } from "@/lib/utils";
 
 import { Logo } from "./logo";
 
-export function Header() {
-  const pathname = usePathname();
+/** Header that highlights the current route. Render inside <Suspense> (URL is request data). */
+export function CurrentHeader() {
+  return <Header pathname={usePathname()} />;
+}
+
+/** `pathname` is null in the prerendered shell, where no link is highlighted yet. */
+export function Header({ pathname }: { pathname: string | null }) {
   const [open, setOpen] = useState(false);
 
   // Close the mobile menu on navigation.
@@ -29,7 +34,8 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const isActive = (href: string) =>
+    pathname !== null && (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-ink-950/80 backdrop-blur-lg print:hidden">

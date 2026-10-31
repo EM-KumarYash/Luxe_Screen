@@ -1,5 +1,6 @@
 import "server-only";
 
+import { unstable_rethrow } from "next/navigation";
 import { z } from "zod";
 
 import { Prisma } from "@/generated/prisma/client";
@@ -79,6 +80,8 @@ export function apiHandler<C = unknown>(
       }
       return await handler(request, context);
     } catch (error) {
+      // Let Next.js control-flow signals (e.g. prerender bail-outs) propagate.
+      unstable_rethrow(error);
       return toErrorResponse(error);
     }
   };

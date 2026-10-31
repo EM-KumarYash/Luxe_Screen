@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Suspense } from "react";
 
 import { Footer } from "@/components/layout/footer";
-import { Header } from "@/components/layout/header";
+import { CurrentHeader, Header } from "@/components/layout/header";
 import { siteConfig } from "@/data/site";
 
 import "./globals.css";
@@ -47,7 +48,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <Header />
+        <Suspense fallback={<Header pathname={null} />}>
+          <CurrentHeader />
+        </Suspense>
         <main id="main" className="flex-1">
           {children}
         </main>
