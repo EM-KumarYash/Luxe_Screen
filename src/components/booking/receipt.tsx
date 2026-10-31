@@ -27,7 +27,7 @@ export function Receipt({ booking }: { booking: BookingDTO }) {
         </h2>
         <p className="mt-2 text-sm text-zinc-400">
           {confirmed
-            ? `A confirmation has been sent to ${booking.customer.email}.`
+            ? "Show this booking reference at the venue. We'll contact you on your phone if anything changes."
             : "This booking is not confirmed. Please start a new booking."}
         </p>
         <p className="mt-4 rounded-full border border-gold-400/40 px-4 py-1.5 font-mono text-sm tracking-wider text-gold-300">
