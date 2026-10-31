@@ -7,7 +7,8 @@ import { listLocations } from "@/server/catalog";
 
 export const metadata: Metadata = {
   title: "New Locations",
-  description: "Luxe Screens is coming to Mumbai, Pune and Delhi. Join the waitlist for early access.",
+  description:
+    "Luxe Screens is coming to Mumbai, Pune and Delhi. Join the waitlist for early access.",
 };
 
 export default async function WaitlistPage() {
@@ -25,7 +26,10 @@ export default async function WaitlistPage() {
         />
         <ul className="mt-10 space-y-3">
           {upcoming.map((l) => (
-            <li key={l.id} className="flex items-center gap-4 rounded-2xl border border-white/5 bg-ink-900 p-4">
+            <li
+              key={l.id}
+              className="flex items-center gap-4 rounded-2xl border border-white/5 bg-ink-900 p-4"
+            >
               <span className="flex size-10 items-center justify-center rounded-full bg-gold-500/10 text-gold-400">
                 <MapPin aria-hidden className="size-5" />
               </span>

@@ -153,10 +153,18 @@ function scoreTheater(
 // Two passes: first secure one item per category at its cheapest option (so a
 // lavish decor pick never crowds out the cake), then upgrade options in priority
 // order with whatever budget is left.
-function buildPackage(occasion: OccasionKey, addOns: PlannerAddOn[], allowance: number): PlannedItem[] {
+function buildPackage(
+  occasion: OccasionKey,
+  addOns: PlannerAddOn[],
+  allowance: number,
+): PlannedItem[] {
   const profile = PROFILES[occasion];
   const bySlug = new Map(addOns.map((a) => [a.slug, a]));
-  const picks: { addOn: PlannerAddOn; category: PlannerAddOn["category"]; option: PlannerAddOn["options"][number] }[] = [];
+  const picks: {
+    addOn: PlannerAddOn;
+    category: PlannerAddOn["category"];
+    option: PlannerAddOn["options"][number];
+  }[] = [];
   let remaining = allowance;
 
   for (const category of CATEGORY_PRIORITY) {
@@ -206,7 +214,15 @@ export function planExperience<T extends PlannerTheater>(input: {
       const { score, cost, reasons } = scoreTheater(theater, input);
       const items = buildPackage(input.occasion, input.addOns, Math.max(0, input.budget - cost));
       const total = cost + items.reduce((sum, i) => sum + i.price, 0);
-      return { theater, theaterCost: cost, items, total, withinBudget: total <= input.budget, score, reasons };
+      return {
+        theater,
+        theaterCost: cost,
+        items,
+        total,
+        withinBudget: total <= input.budget,
+        score,
+        reasons,
+      };
     })
     .sort((a, b) => b.score - a.score || a.total - b.total)
     .slice(0, input.limit ?? 3);

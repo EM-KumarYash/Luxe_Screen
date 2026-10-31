@@ -11,10 +11,22 @@ import { Lightbox } from "./lightbox";
 import { TheaterCard } from "./theater-card";
 
 const SORTS = {
-  recommended: { label: "Top rated", compare: (a: TheaterDTO, b: TheaterDTO) => b.rating - a.rating },
-  "price-asc": { label: "Price: low to high", compare: (a: TheaterDTO, b: TheaterDTO) => a.basePrice - b.basePrice },
-  "price-desc": { label: "Price: high to low", compare: (a: TheaterDTO, b: TheaterDTO) => b.basePrice - a.basePrice },
-  capacity: { label: "Capacity: largest", compare: (a: TheaterDTO, b: TheaterDTO) => b.maxCapacity - a.maxCapacity },
+  recommended: {
+    label: "Top rated",
+    compare: (a: TheaterDTO, b: TheaterDTO) => b.rating - a.rating,
+  },
+  "price-asc": {
+    label: "Price: low to high",
+    compare: (a: TheaterDTO, b: TheaterDTO) => a.basePrice - b.basePrice,
+  },
+  "price-desc": {
+    label: "Price: high to low",
+    compare: (a: TheaterDTO, b: TheaterDTO) => b.basePrice - a.basePrice,
+  },
+  capacity: {
+    label: "Capacity: largest",
+    compare: (a: TheaterDTO, b: TheaterDTO) => b.maxCapacity - a.maxCapacity,
+  },
 } as const;
 type SortKey = keyof typeof SORTS;
 
@@ -26,7 +38,13 @@ const GUEST_FILTERS = [
   { value: 15, label: "15+ guests" },
 ];
 
-export function GalleryExplorer({ theaters, locations }: { theaters: TheaterDTO[]; locations: LocationDTO[] }) {
+export function GalleryExplorer({
+  theaters,
+  locations,
+}: {
+  theaters: TheaterDTO[];
+  locations: LocationDTO[];
+}) {
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("all");
   const [minGuests, setMinGuests] = useState(0);
@@ -42,7 +60,16 @@ export function GalleryExplorer({ theaters, locations }: { theaters: TheaterDTO[
       .filter(
         (t) =>
           !q ||
-          [t.name, t.tagline, t.description, t.location.city, t.location.name, t.screen, t.sound, ...t.amenities]
+          [
+            t.name,
+            t.tagline,
+            t.description,
+            t.location.city,
+            t.location.name,
+            t.screen,
+            t.sound,
+            ...t.amenities,
+          ]
             .join(" ")
             .toLowerCase()
             .includes(q),
@@ -64,7 +91,10 @@ export function GalleryExplorer({ theaters, locations }: { theaters: TheaterDTO[
         className="grid gap-3 rounded-2xl border border-white/5 bg-ink-900 p-4 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]"
       >
         <div className="relative sm:col-span-2 lg:col-span-1">
-          <Search aria-hidden className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-zinc-500" />
+          <Search
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-zinc-500"
+          />
           <label htmlFor="gallery-search" className="sr-only">
             Search theatres
           </label>
@@ -81,7 +111,11 @@ export function GalleryExplorer({ theaters, locations }: { theaters: TheaterDTO[
           <label htmlFor="gallery-location" className="sr-only">
             Location
           </label>
-          <Select id="gallery-location" value={location} onChange={(e) => setLocation(e.target.value)}>
+          <Select
+            id="gallery-location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          >
             <option value="all">All locations</option>
             {locations.map((l) => (
               <option key={l.slug} value={l.slug}>
@@ -94,7 +128,11 @@ export function GalleryExplorer({ theaters, locations }: { theaters: TheaterDTO[
           <label htmlFor="gallery-guests" className="sr-only">
             Group size
           </label>
-          <Select id="gallery-guests" value={minGuests} onChange={(e) => setMinGuests(Number(e.target.value))}>
+          <Select
+            id="gallery-guests"
+            value={minGuests}
+            onChange={(e) => setMinGuests(Number(e.target.value))}
+          >
             {GUEST_FILTERS.map((g) => (
               <option key={g.value} value={g.value}>
                 {g.label}
@@ -106,7 +144,11 @@ export function GalleryExplorer({ theaters, locations }: { theaters: TheaterDTO[
           <label htmlFor="gallery-sort" className="sr-only">
             Sort by
           </label>
-          <Select id="gallery-sort" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
+          <Select
+            id="gallery-sort"
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortKey)}
+          >
             {Object.entries(SORTS).map(([key, { label }]) => (
               <option key={key} value={key}>
                 {label}
@@ -142,7 +184,9 @@ export function GalleryExplorer({ theaters, locations }: { theaters: TheaterDTO[
         <div className="mt-6 flex flex-col items-center rounded-2xl border border-dashed border-white/10 px-6 py-16 text-center">
           <SlidersHorizontal aria-hidden className="size-8 text-zinc-600" />
           <p className="mt-4 font-medium text-white">No theatres match your filters</p>
-          <p className="mt-1 text-sm text-zinc-500">Try a different search or a smaller group size.</p>
+          <p className="mt-1 text-sm text-zinc-500">
+            Try a different search or a smaller group size.
+          </p>
           <Button variant="secondary" size="sm" className="mt-6" onClick={resetFilters}>
             Clear filters
           </Button>

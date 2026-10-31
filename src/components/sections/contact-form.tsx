@@ -31,7 +31,10 @@ export function ContactForm() {
     try {
       await apiFetch("/api/contact", { method: "POST", json: values });
       reset();
-      setStatus({ tone: "success", text: "Thanks! We've received your message and will reply soon." });
+      setStatus({
+        tone: "success",
+        text: "Thanks! We've received your message and will reply soon.",
+      });
     } catch (error) {
       if (error instanceof ApiClientError) {
         for (const [field, messages] of Object.entries(error.fieldErrors)) {
@@ -51,7 +54,11 @@ export function ContactForm() {
     >
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="contact-name" label="Name" error={errors.name?.message}>
-          <Input {...fieldAria("contact-name", errors.name?.message)} autoComplete="name" {...register("name")} />
+          <Input
+            {...fieldAria("contact-name", errors.name?.message)}
+            autoComplete="name"
+            {...register("name")}
+          />
         </Field>
         <Field id="contact-phone" label="Phone" optional error={errors.phone?.message}>
           <Input

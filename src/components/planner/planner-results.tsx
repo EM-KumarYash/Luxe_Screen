@@ -37,8 +37,8 @@ export function PlannerResults({ data, input }: { data: PlannerResponseDTO; inpu
   if (!rec) {
     return (
       <Alert className="mt-10">
-        None of our theatres at this location can host {input.guests} guests. Try a smaller group or another
-        location.
+        None of our theatres at this location can host {input.guests} guests. Try a smaller group or
+        another location.
       </Alert>
     );
   }
@@ -46,7 +46,9 @@ export function PlannerResults({ data, input }: { data: PlannerResponseDTO; inpu
   return (
     <section aria-labelledby="planner-result-title" className="mt-12 animate-fade-in space-y-10">
       <div>
-        <p className="text-xs font-semibold tracking-[0.25em] text-gold-400 uppercase">Our recommendation</p>
+        <p className="text-xs font-semibold tracking-[0.25em] text-gold-400 uppercase">
+          Our recommendation
+        </p>
         <h2 id="planner-result-title" className="mt-2 font-display text-3xl text-white">
           {OCCASION_LABELS[input.occasion]} at {rec.theater.name}
         </h2>
@@ -70,7 +72,8 @@ export function PlannerResults({ data, input }: { data: PlannerResponseDTO; inpu
             </p>
             <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-zinc-300">
               <li className="flex items-center gap-1.5">
-                <Users aria-hidden className="size-3.5 text-gold-400" /> Up to {rec.theater.maxCapacity}
+                <Users aria-hidden className="size-3.5 text-gold-400" /> Up to{" "}
+                {rec.theater.maxCapacity}
               </li>
               <li className="flex items-center gap-1.5">
                 <Monitor aria-hidden className="size-3.5 text-gold-400" /> {rec.theater.screen}
@@ -104,7 +107,8 @@ export function PlannerResults({ data, input }: { data: PlannerResponseDTO; inpu
               {rec.items.map((item) => (
                 <div key={item.optionId} className="flex justify-between gap-4 py-2">
                   <dt className="text-zinc-400">
-                    {CATEGORY_LABELS[item.category].replace(/s$/, "")} · {item.addOnName} ({item.optionName})
+                    {CATEGORY_LABELS[item.category].replace(/s$/, "")} · {item.addOnName} (
+                    {item.optionName})
                   </dt>
                   <dd className="shrink-0 text-zinc-200">{formatINR(item.price)}</dd>
                 </div>
@@ -128,9 +132,18 @@ export function PlannerResults({ data, input }: { data: PlannerResponseDTO; inpu
           <h3 className="font-display text-2xl text-white">Other great options</h3>
           <div className="mt-5 grid gap-5 md:grid-cols-2">
             {data.alternatives.map((alt) => (
-              <article key={alt.theater.id} className="flex gap-4 rounded-2xl border border-white/5 bg-ink-900 p-4">
+              <article
+                key={alt.theater.id}
+                className="flex gap-4 rounded-2xl border border-white/5 bg-ink-900 p-4"
+              >
                 <div className="relative size-24 shrink-0 overflow-hidden rounded-xl">
-                  <Image src={alt.theater.images[0]} alt="" fill sizes="96px" className="object-cover" />
+                  <Image
+                    src={alt.theater.images[0]}
+                    alt=""
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                  />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">
                   <h4 className="font-medium text-white">{alt.theater.name}</h4>
@@ -154,8 +167,8 @@ export function PlannerResults({ data, input }: { data: PlannerResponseDTO; inpu
       )}
 
       <p className="text-xs text-zinc-500">
-        Recommendations come from a rules-based engine that scores theatres on group size, occasion and budget fit.
-        Final prices are confirmed at checkout.
+        Recommendations come from a rules-based engine that scores theatres on group size, occasion
+        and budget fit. Final prices are confirmed at checkout.
       </p>
     </section>
   );

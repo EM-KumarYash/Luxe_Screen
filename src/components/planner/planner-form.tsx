@@ -25,7 +25,10 @@ export function PlannerForm({ locations }: { locations: LocationDTO[] }) {
   const [location, setLocation] = useState(locations[0]?.slug ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ data: PlannerResponseDTO; input: { occasion: OccasionKey; guests: number; budget: number; location: string } } | null>(null);
+  const [result, setResult] = useState<{
+    data: PlannerResponseDTO;
+    input: { occasion: OccasionKey; guests: number; budget: number; location: string };
+  } | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   async function submit(event: React.FormEvent) {
@@ -34,9 +37,14 @@ export function PlannerForm({ locations }: { locations: LocationDTO[] }) {
     setError(null);
     const input = { occasion, budget, guests, location };
     try {
-      const data = await apiFetch<PlannerResponseDTO>("/api/planner", { method: "POST", json: input });
+      const data = await apiFetch<PlannerResponseDTO>("/api/planner", {
+        method: "POST",
+        json: input,
+      });
       setResult({ data, input });
-      requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+      requestAnimationFrame(() =>
+        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      );
     } catch (err) {
       setError(errorMessage(err));
     } finally {
@@ -46,7 +54,10 @@ export function PlannerForm({ locations }: { locations: LocationDTO[] }) {
 
   return (
     <>
-      <form onSubmit={submit} className="space-y-8 rounded-2xl border border-white/5 bg-ink-900 p-6 sm:p-8">
+      <form
+        onSubmit={submit}
+        className="space-y-8 rounded-2xl border border-white/5 bg-ink-900 p-6 sm:p-8"
+      >
         <fieldset>
           <legend className="text-sm font-medium text-zinc-300">What are you celebrating?</legend>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -103,7 +114,11 @@ export function PlannerForm({ locations }: { locations: LocationDTO[] }) {
             <span id="planner-guests-label" className="text-sm font-medium text-zinc-300">
               Number of guests
             </span>
-            <div className="mt-3 flex items-center gap-3" role="group" aria-labelledby="planner-guests-label">
+            <div
+              className="mt-3 flex items-center gap-3"
+              role="group"
+              aria-labelledby="planner-guests-label"
+            >
               <button
                 type="button"
                 onClick={() => setGuests((g) => Math.max(GUESTS.min, g - 1))}
@@ -113,7 +128,10 @@ export function PlannerForm({ locations }: { locations: LocationDTO[] }) {
               >
                 <Minus className="size-4" />
               </button>
-              <output aria-live="polite" className="w-10 text-center text-2xl font-semibold text-white">
+              <output
+                aria-live="polite"
+                className="w-10 text-center text-2xl font-semibold text-white"
+              >
                 {guests}
               </output>
               <button

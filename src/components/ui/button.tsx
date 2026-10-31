@@ -8,7 +8,8 @@ import { Spinner } from "./spinner";
 const variants = {
   primary:
     "bg-gold-500 text-ink-950 hover:bg-gold-400 shadow-[0_8px_30px_-12px_rgba(201,161,74,0.7)] disabled:bg-gold-600/60",
-  secondary: "border border-white/15 bg-white/5 text-zinc-100 hover:bg-white/10 hover:border-white/25",
+  secondary:
+    "border border-white/15 bg-white/5 text-zinc-100 hover:bg-white/10 hover:border-white/25",
   ghost: "text-zinc-300 hover:text-white hover:bg-white/5",
 } as const;
 
@@ -20,7 +21,10 @@ const sizes = {
 
 type StyleProps = { variant?: keyof typeof variants; size?: keyof typeof sizes };
 
-export function buttonClasses({ variant = "primary", size = "md" }: StyleProps = {}, className?: string) {
+export function buttonClasses(
+  { variant = "primary", size = "md" }: StyleProps = {},
+  className?: string,
+) {
   return cn(
     "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors",
     "disabled:cursor-not-allowed disabled:opacity-60",

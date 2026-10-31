@@ -26,16 +26,25 @@ export function WaitlistForm({ locations }: { locations: LocationDTO[] }) {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(waitlistSchema),
-    defaultValues: { name: "", email: "", phone: "", location: locations[0]?.slug ?? "", message: "" },
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      location: locations[0]?.slug ?? "",
+      message: "",
+    },
   });
 
   const onSubmit = handleSubmit(async (values) => {
     setError(null);
     try {
-      const { entry } = await apiFetch<{ entry: { location: { name: string; city: string } } }>("/api/waitlist", {
-        method: "POST",
-        json: values,
-      });
+      const { entry } = await apiFetch<{ entry: { location: { name: string; city: string } } }>(
+        "/api/waitlist",
+        {
+          method: "POST",
+          json: values,
+        },
+      );
       setJoined(`${entry.location.name}, ${entry.location.city}`);
       reset();
     } catch (err) {
@@ -54,7 +63,8 @@ export function WaitlistForm({ locations }: { locations: LocationDTO[] }) {
         <PartyPopper aria-hidden className="size-10 text-gold-400" />
         <h2 className="mt-4 font-display text-2xl text-white">You&apos;re on the list!</h2>
         <p className="mt-2 max-w-sm text-sm text-zinc-400">
-          We&apos;ll email you first when {joined} opens, with an early-bird offer for your first show.
+          We&apos;ll email you first when {joined} opens, with an early-bird offer for your first
+          show.
         </p>
         <Button variant="secondary" className="mt-6" onClick={() => setJoined(null)}>
           Join for another city
@@ -70,8 +80,15 @@ export function WaitlistForm({ locations }: { locations: LocationDTO[] }) {
       aria-label="Join the waitlist"
       className="space-y-5 rounded-2xl border border-white/5 bg-ink-900 p-6 sm:p-8"
     >
-      <Field id="waitlist-location" label="City you're waiting for" error={errors.location?.message}>
-        <Select {...fieldAria("waitlist-location", errors.location?.message)} {...register("location")}>
+      <Field
+        id="waitlist-location"
+        label="City you're waiting for"
+        error={errors.location?.message}
+      >
+        <Select
+          {...fieldAria("waitlist-location", errors.location?.message)}
+          {...register("location")}
+        >
           {locations.map((l) => (
             <option key={l.slug} value={l.slug}>
               {l.name}, {l.city}
@@ -80,7 +97,11 @@ export function WaitlistForm({ locations }: { locations: LocationDTO[] }) {
         </Select>
       </Field>
       <Field id="waitlist-name" label="Name" error={errors.name?.message}>
-        <Input {...fieldAria("waitlist-name", errors.name?.message)} autoComplete="name" {...register("name")} />
+        <Input
+          {...fieldAria("waitlist-name", errors.name?.message)}
+          autoComplete="name"
+          {...register("name")}
+        />
       </Field>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="waitlist-email" label="Email" error={errors.email?.message}>
@@ -101,7 +122,12 @@ export function WaitlistForm({ locations }: { locations: LocationDTO[] }) {
           />
         </Field>
       </div>
-      <Field id="waitlist-message" label="Anything you'd like us to know?" optional error={errors.message?.message}>
+      <Field
+        id="waitlist-message"
+        label="Anything you'd like us to know?"
+        optional
+        error={errors.message?.message}
+      >
         <Textarea
           {...fieldAria("waitlist-message", errors.message?.message)}
           rows={3}

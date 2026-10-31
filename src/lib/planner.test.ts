@@ -3,9 +3,33 @@ import { describe, expect, it } from "vitest";
 import { planExperience, type PlannerAddOn, type PlannerTheater } from "./planner";
 
 const theaters: PlannerTheater[] = [
-  { id: "small", name: "Small", basePrice: 149900, includedGuests: 2, extraGuestPrice: 30000, maxCapacity: 4, rating: 4.9 },
-  { id: "mid", name: "Mid", basePrice: 249900, includedGuests: 4, extraGuestPrice: 35000, maxCapacity: 8, rating: 4.8 },
-  { id: "large", name: "Large", basePrice: 499900, includedGuests: 10, extraGuestPrice: 30000, maxCapacity: 20, rating: 4.9 },
+  {
+    id: "small",
+    name: "Small",
+    basePrice: 149900,
+    includedGuests: 2,
+    extraGuestPrice: 30000,
+    maxCapacity: 4,
+    rating: 4.9,
+  },
+  {
+    id: "mid",
+    name: "Mid",
+    basePrice: 249900,
+    includedGuests: 4,
+    extraGuestPrice: 35000,
+    maxCapacity: 8,
+    rating: 4.8,
+  },
+  {
+    id: "large",
+    name: "Large",
+    basePrice: 499900,
+    includedGuests: 10,
+    extraGuestPrice: 30000,
+    maxCapacity: 20,
+    rating: 4.9,
+  },
 ];
 
 const addOns: PlannerAddOn[] = [
@@ -44,23 +68,43 @@ const addOns: PlannerAddOn[] = [
 
 describe("planExperience", () => {
   it("recommends an intimate room for a proposal", () => {
-    const [top] = planExperience({ occasion: "PROPOSAL", budget: 500000, guests: 2, theaters, addOns });
+    const [top] = planExperience({
+      occasion: "PROPOSAL",
+      budget: 500000,
+      guests: 2,
+      theaters,
+      addOns,
+    });
     expect(top.theater.id).toBe("small");
     expect(top.withinBudget).toBe(true);
     expect(top.items.map((i) => i.category)).toEqual(["DECOR", "CAKE", "GIFT"]);
   });
 
   it("excludes theatres that cannot fit the group", () => {
-    const options = planExperience({ occasion: "BIRTHDAY", budget: 1500000, guests: 12, theaters, addOns });
+    const options = planExperience({
+      occasion: "BIRTHDAY",
+      budget: 1500000,
+      guests: 12,
+      theaters,
+      addOns,
+    });
     expect(options.map((o) => o.theater.id)).toEqual(["large"]);
   });
 
   it("keeps the package within budget by downgrading or skipping add-ons", () => {
-    const [top] = planExperience({ occasion: "ANNIVERSARY", budget: 250000, guests: 2, theaters, addOns });
+    const [top] = planExperience({
+      occasion: "ANNIVERSARY",
+      budget: 250000,
+      guests: 2,
+      theaters,
+      addOns,
+    });
     expect(top.total).toBeLessThanOrEqual(250000);
   });
 
   it("returns nothing when no theatre is large enough", () => {
-    expect(planExperience({ occasion: "BIRTHDAY", budget: 1000000, guests: 50, theaters, addOns })).toEqual([]);
+    expect(
+      planExperience({ occasion: "BIRTHDAY", budget: 1000000, guests: 50, theaters, addOns }),
+    ).toEqual([]);
   });
 });

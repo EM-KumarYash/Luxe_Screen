@@ -22,7 +22,10 @@ export async function Contact() {
           <ul className="mt-8 space-y-4 text-sm text-zinc-300">
             <li className="flex items-center gap-3">
               <Phone aria-hidden className="size-4 text-gold-400" />
-              <a href={`tel:${siteConfig.phone.replace(/\s/g, "")}`} className="hover:text-gold-300">
+              <a
+                href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
+                className="hover:text-gold-300"
+              >
                 {siteConfig.phone}
               </a>
             </li>

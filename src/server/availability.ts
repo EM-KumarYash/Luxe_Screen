@@ -10,7 +10,10 @@ import { theaterInclude, toTheaterDTO } from "./catalog";
 /** Bookings that currently hold a slot: confirmed, or pending with a live hold. */
 export function activeHoldFilter(now: Date) {
   return {
-    OR: [{ status: "CONFIRMED" as const }, { status: "PENDING" as const, holdExpiresAt: { gt: now } }],
+    OR: [
+      { status: "CONFIRMED" as const },
+      { status: "PENDING" as const, holdExpiresAt: { gt: now } },
+    ],
   };
 }
 
@@ -21,7 +24,11 @@ export async function getAvailability(query: {
 }): Promise<AvailabilityDTO> {
   const now = new Date();
   if (!isWithinBookingWindow(query.date, now)) {
-    throw new ApiError(422, "DATE_OUT_OF_RANGE", "Bookings are open from today up to 60 days ahead.");
+    throw new ApiError(
+      422,
+      "DATE_OUT_OF_RANGE",
+      "Bookings are open from today up to 60 days ahead.",
+    );
   }
 
   const theaters = await prisma.theater.findMany({

@@ -19,8 +19,15 @@ export class ApiError extends Error {
   }
 }
 
-export function errorResponse(status: number, code: ApiErrorCode, message: string, details?: unknown) {
-  const body: ApiErrorBody = { error: { code, message, ...(details === undefined ? {} : { details }) } };
+export function errorResponse(
+  status: number,
+  code: ApiErrorCode,
+  message: string,
+  details?: unknown,
+) {
+  const body: ApiErrorBody = {
+    error: { code, message, ...(details === undefined ? {} : { details }) },
+  };
   return Response.json(body, { status });
 }
 
@@ -29,7 +36,12 @@ function toErrorResponse(error: unknown): Response {
     return errorResponse(error.status, error.code, error.message, error.details);
   }
   if (error instanceof z.ZodError) {
-    return errorResponse(400, "VALIDATION_ERROR", "Some fields are invalid.", z.flattenError(error));
+    return errorResponse(
+      400,
+      "VALIDATION_ERROR",
+      "Some fields are invalid.",
+      z.flattenError(error),
+    );
   }
   if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
     return errorResponse(404, "NOT_FOUND", "The requested record was not found.");
@@ -55,8 +67,13 @@ export function apiHandler<C = unknown>(
         const result = rateLimit(`${key}:${clientIp(request)}`, limit, windowMs);
         if (!result.allowed) {
           return Response.json(
-            { error: { code: "RATE_LIMITED", message: "Too many requests. Please slow down." } } satisfies ApiErrorBody,
-            { status: 429, headers: { "Retry-After": String(Math.ceil(result.retryAfterMs / 1000)) } },
+            {
+              error: { code: "RATE_LIMITED", message: "Too many requests. Please slow down." },
+            } satisfies ApiErrorBody,
+            {
+              status: 429,
+              headers: { "Retry-After": String(Math.ceil(result.retryAfterMs / 1000)) },
+            },
           );
         }
       }
@@ -67,7 +84,10 @@ export function apiHandler<C = unknown>(
   };
 }
 
-export async function parseBody<T extends z.ZodType>(request: Request, schema: T): Promise<z.output<T>> {
+export async function parseBody<T extends z.ZodType>(
+  request: Request,
+  schema: T,
+): Promise<z.output<T>> {
   let json: unknown;
   try {
     json = await request.json();

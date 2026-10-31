@@ -13,7 +13,9 @@ const slug = z
   .regex(/^[a-z0-9-]+$/, "Invalid slug")
   .max(80);
 
-export const dateOnlySchema = z.string().refine(isValidDateOnly, "Use a valid date in YYYY-MM-DD format");
+export const dateOnlySchema = z
+  .string()
+  .refine(isValidDateOnly, "Use a valid date in YYYY-MM-DD format");
 
 export const nameSchema = z
   .string()
@@ -21,7 +23,11 @@ export const nameSchema = z
   .min(2, "Please enter at least 2 characters")
   .max(80, "Please keep it under 80 characters");
 
-export const emailSchema = z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address"));
+export const emailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .pipe(z.email("Enter a valid email address"));
 
 /** Indian mobile number; accepts optional +91/0 prefix and spaces, normalises to 10 digits. */
 export const phoneSchema = z
@@ -55,7 +61,10 @@ export const cartItemSchema = z.object({
 const cartItemsSchema = z
   .array(cartItemSchema)
   .max(20)
-  .refine((items) => new Set(items.map((i) => i.optionId)).size === items.length, "Duplicate add-on options");
+  .refine(
+    (items) => new Set(items.map((i) => i.optionId)).size === items.length,
+    "Duplicate add-on options",
+  );
 
 export const couponCodeSchema = z
   .string()
@@ -109,7 +118,11 @@ export const confirmBookingSchema = z.object({
 export const plannerSchema = z.object({
   occasion: occasionSchema,
   /** Budget in rupees. */
-  budget: z.number().int().min(1000, "Minimum budget is ₹1,000").max(500000, "Maximum budget is ₹5,00,000"),
+  budget: z
+    .number()
+    .int()
+    .min(1000, "Minimum budget is ₹1,000")
+    .max(500000, "Maximum budget is ₹5,00,000"),
   guests: guestsSchema,
   location: slug,
 });

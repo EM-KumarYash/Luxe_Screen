@@ -14,7 +14,11 @@ export const OCCASION_LABELS: Record<OccasionKey, string> = {
 
 export const CATEGORY_LABELS = { CAKE: "Cakes", DECOR: "Decor", GIFT: "Gifts" } as const;
 
-export const PAYMENT_METHOD_LABELS = { UPI: "UPI", CARD: "Card", NET_BANKING: "Net Banking" } as const;
+export const PAYMENT_METHOD_LABELS = {
+  UPI: "UPI",
+  CARD: "Card",
+  NET_BANKING: "Net Banking",
+} as const;
 
 /** Which occasion-detail fields make sense for each occasion. */
 export const OCCASION_FIELDS: Record<

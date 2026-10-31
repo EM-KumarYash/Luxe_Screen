@@ -7,7 +7,11 @@ import { ApiError } from "@/lib/api";
 import { prisma } from "@/lib/db";
 import { fromDbDate, isSlotClosed, isWithinBookingWindow, toDbDate } from "@/lib/dates";
 import { calculatePrice, evaluateCoupon } from "@/lib/pricing";
-import type { ConfirmBookingInput, CouponValidateInput, CreateBookingInput } from "@/lib/validation";
+import type {
+  ConfirmBookingInput,
+  CouponValidateInput,
+  CreateBookingInput,
+} from "@/lib/validation";
 import type { BookingDTO, CouponValidationDTO } from "@/types";
 
 /** How long a pending booking holds its slot while the customer pays. */
@@ -23,13 +27,19 @@ function generateReference(): string {
   return `LXS-${code}`;
 }
 
-const slotKey = (theaterId: string, slotId: string, date: string) => `${theaterId}:${slotId}:${date}`;
+const slotKey = (theaterId: string, slotId: string, date: string) =>
+  `${theaterId}:${slotId}:${date}`;
 
 /**
  * Prices a cart on the server from catalogue data. Client-sent prices are never trusted.
  */
 async function buildQuote(
-  input: { theaterId: string; guests: number; items: { optionId: string; quantity: number }[]; couponCode?: string },
+  input: {
+    theaterId: string;
+    guests: number;
+    items: { optionId: string; quantity: number }[];
+    couponCode?: string;
+  },
   db: Db = prisma,
 ) {
   const theater = await db.theater.findFirst({
@@ -52,7 +62,11 @@ async function buildQuote(
       })
     : [];
   if (options.length !== optionIds.length) {
-    throw new ApiError(422, "ADDON_UNAVAILABLE", "One or more selected add-ons are no longer available.");
+    throw new ApiError(
+      422,
+      "ADDON_UNAVAILABLE",
+      "One or more selected add-ons are no longer available.",
+    );
   }
   const optionsById = new Map(options.map((o) => [o.id, o]));
   const lines = input.items.map((item) => {
@@ -68,7 +82,8 @@ async function buildQuote(
     coupon = await db.coupon.findUnique({ where: { code: input.couponCode } });
     if (!coupon) throw new ApiError(422, "COUPON_INVALID", "This coupon code is not valid.");
     const result = evaluateCoupon(coupon, base.subtotal);
-    if (!result.valid) throw new ApiError(422, "COUPON_INVALID", result.message, { reason: result.reason });
+    if (!result.valid)
+      throw new ApiError(422, "COUPON_INVALID", result.message, { reason: result.reason });
     discountAmount = result.discount;
   }
 
@@ -119,7 +134,12 @@ function toBookingDTO(b: BookingRow, now: Date = new Date()): BookingDTO {
     occasion: b.occasion,
     occasionDetails: (b.occasionDetails as BookingDTO["occasionDetails"]) ?? null,
     specialRequests: b.specialRequests,
-    theater: { id: b.theater.id, slug: b.theater.slug, name: b.theater.name, image: b.theater.images[0] ?? null },
+    theater: {
+      id: b.theater.id,
+      slug: b.theater.slug,
+      name: b.theater.name,
+      image: b.theater.images[0] ?? null,
+    },
     location: b.location,
     slot: b.slot,
     items: b.items.map((i) => ({
@@ -156,15 +176,24 @@ export async function getBooking(id: string): Promise<BookingDTO | null> {
 export async function createBooking(input: CreateBookingInput): Promise<BookingDTO> {
   const now = new Date();
   if (!isWithinBookingWindow(input.date, now)) {
-    throw new ApiError(422, "DATE_OUT_OF_RANGE", "Bookings are open from today up to 60 days ahead.");
+    throw new ApiError(
+      422,
+      "DATE_OUT_OF_RANGE",
+      "Bookings are open from today up to 60 days ahead.",
+    );
   }
 
   const slot = await prisma.slot.findFirst({
     where: { id: input.slotId, theaterId: input.theaterId, status: "ACTIVE" },
   });
-  if (!slot) throw new ApiError(404, "NOT_FOUND", "This time slot does not exist for the selected theatre.");
+  if (!slot)
+    throw new ApiError(404, "NOT_FOUND", "This time slot does not exist for the selected theatre.");
   if (isSlotClosed(input.date, slot.startTime, now)) {
-    throw new ApiError(422, "SLOT_CLOSED", "This slot is too close to its start time to book online.");
+    throw new ApiError(
+      422,
+      "SLOT_CLOSED",
+      "This slot is too close to its start time to book online.",
+    );
   }
 
   const quote = await buildQuote(input);
@@ -221,7 +250,11 @@ export async function createBooking(input: CreateBookingInput): Promise<BookingD
     return toBookingDTO(booking, now);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      throw new ApiError(409, "SLOT_UNAVAILABLE", "Sorry, this slot was just booked. Please pick another time.");
+      throw new ApiError(
+        409,
+        "SLOT_UNAVAILABLE",
+        "Sorry, this slot was just booked. Please pick another time.",
+      );
     }
     throw error;
   }
@@ -245,7 +278,11 @@ export async function confirmBooking(input: ConfirmBookingInput): Promise<Bookin
       where: { id: booking.id, status: "PENDING" },
       data: { status: "EXPIRED", activeSlotKey: null },
     });
-    throw new ApiError(410, "HOLD_EXPIRED", "Your slot hold expired. Please start the booking again.");
+    throw new ApiError(
+      410,
+      "HOLD_EXPIRED",
+      "Your slot hold expired. Please start the booking again.",
+    );
   }
 
   if (input.simulateOutcome === "FAILURE") {
@@ -253,7 +290,11 @@ export async function confirmBooking(input: ConfirmBookingInput): Promise<Bookin
       where: { id: booking.id },
       data: { paymentStatus: "FAILED", paymentMethod: input.paymentMethod },
     });
-    throw new ApiError(402, "PAYMENT_FAILED", "Payment was declined. You can try again before your hold expires.");
+    throw new ApiError(
+      402,
+      "PAYMENT_FAILED",
+      "Payment was declined. You can try again before your hold expires.",
+    );
   }
 
   await prisma.$transaction(async (tx) => {
@@ -277,7 +318,11 @@ export async function confirmBooking(input: ConfirmBookingInput): Promise<Bookin
         WHERE "id" = ${booking.couponId}
           AND ("usageLimit" IS NULL OR "usedCount" < "usageLimit")`;
       if (redeemed === 0) {
-        throw new ApiError(409, "COUPON_INVALID", "This coupon was fully redeemed. Please remove it and retry.");
+        throw new ApiError(
+          409,
+          "COUPON_INVALID",
+          "This coupon was fully redeemed. Please remove it and retry.",
+        );
       }
     }
   });

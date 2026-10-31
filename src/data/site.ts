@@ -2,7 +2,8 @@
 import type { LucideIcon } from "lucide-react";
 import { Cake, Gem, Heart, PartyPopper, Popcorn, Sparkles } from "lucide-react";
 
-const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1600&q=80`;
+const unsplash = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1600&q=80`;
 
 export const siteConfig = {
   name: "Luxe Screens",
@@ -78,7 +79,10 @@ export const services: { icon: LucideIcon; title: string; text: string }[] = [
 
 export const steps = [
   { title: "Pick a slot", text: "Choose your date, time and the theatre that fits your group." },
-  { title: "Personalise", text: "Add cakes, decor and gifts, or let our AI planner choose for you." },
+  {
+    title: "Personalise",
+    text: "Add cakes, decor and gifts, or let our AI planner choose for you.",
+  },
   { title: "Celebrate", text: "Walk in to a fully set-up theatre. We take care of the rest." },
 ];
 

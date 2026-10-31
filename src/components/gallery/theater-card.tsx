@@ -75,7 +75,10 @@ export function TheaterCard({
             <p className="text-xs text-zinc-500">From</p>
             <p className="text-lg font-semibold text-white">
               {formatINR(theater.basePrice)}
-              <span className="text-xs font-normal text-zinc-500"> / {theater.includedGuests} guests</span>
+              <span className="text-xs font-normal text-zinc-500">
+                {" "}
+                / {theater.includedGuests} guests
+              </span>
             </p>
           </div>
           <ButtonLink

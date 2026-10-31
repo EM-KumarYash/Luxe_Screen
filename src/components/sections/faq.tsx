@@ -10,7 +10,10 @@ export function Faq() {
         <SectionHeading eyebrow="FAQ" title="Questions, answered" />
         <div className="mt-12 divide-y divide-white/5 rounded-2xl border border-white/5 bg-ink-950">
           {faqs.map((faq) => (
-            <details key={faq.q} className="group px-6 py-5 [&_summary::-webkit-details-marker]:hidden">
+            <details
+              key={faq.q}
+              className="group px-6 py-5 [&_summary::-webkit-details-marker]:hidden"
+            >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-medium text-white">
                 {faq.q}
                 <ChevronDown

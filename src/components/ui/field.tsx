@@ -24,7 +24,10 @@ export function Field({
 }) {
   return (
     <div className={cn("space-y-1.5", className)}>
-      <label htmlFor={id} className="flex items-baseline justify-between text-sm font-medium text-zinc-300">
+      <label
+        htmlFor={id}
+        className="flex items-baseline justify-between text-sm font-medium text-zinc-300"
+      >
         {label}
         {optional && <span className="text-xs font-normal text-zinc-500">Optional</span>}
       </label>
@@ -42,7 +45,11 @@ export function Field({
 
 /** aria props that wire an input to its Field error message. */
 export function fieldAria(id: string, error?: string) {
-  return { id, "aria-invalid": error ? true : undefined, "aria-describedby": error ? `${id}-error` : undefined };
+  return {
+    id,
+    "aria-invalid": error ? true : undefined,
+    "aria-describedby": error ? `${id}-error` : undefined,
+  };
 }
 
 export function Input({ className, ...props }: ComponentProps<"input">) {

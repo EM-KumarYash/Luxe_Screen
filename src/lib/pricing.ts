@@ -23,15 +23,10 @@ export type CouponRule = {
 };
 
 export type CouponRejection =
-  | "INACTIVE"
-  | "NOT_STARTED"
-  | "EXPIRED"
-  | "USAGE_LIMIT_REACHED"
-  | "MIN_ORDER_NOT_MET";
+  "INACTIVE" | "NOT_STARTED" | "EXPIRED" | "USAGE_LIMIT_REACHED" | "MIN_ORDER_NOT_MET";
 
 export type CouponResult =
-  | { valid: true; discount: number }
-  | { valid: false; reason: CouponRejection; message: string };
+  { valid: true; discount: number } | { valid: false; reason: CouponRejection; message: string };
 
 export type PriceBreakdown = {
   theaterAmount: number;
@@ -50,7 +45,11 @@ export function addOnsTotal(items: PricedItem[]): number {
   return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 }
 
-export function evaluateCoupon(coupon: CouponRule, subtotal: number, now: Date = new Date()): CouponResult {
+export function evaluateCoupon(
+  coupon: CouponRule,
+  subtotal: number,
+  now: Date = new Date(),
+): CouponResult {
   if (!coupon.isActive) {
     return { valid: false, reason: "INACTIVE", message: "This coupon is no longer active." };
   }
@@ -61,7 +60,11 @@ export function evaluateCoupon(coupon: CouponRule, subtotal: number, now: Date =
     return { valid: false, reason: "EXPIRED", message: "This coupon has expired." };
   }
   if (coupon.usageLimit !== null && coupon.usedCount >= coupon.usageLimit) {
-    return { valid: false, reason: "USAGE_LIMIT_REACHED", message: "This coupon has been fully redeemed." };
+    return {
+      valid: false,
+      reason: "USAGE_LIMIT_REACHED",
+      message: "This coupon has been fully redeemed.",
+    };
   }
   if (subtotal < coupon.minOrderAmount) {
     const min = Math.round(coupon.minOrderAmount / 100).toLocaleString("en-IN");

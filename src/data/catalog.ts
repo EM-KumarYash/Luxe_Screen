@@ -50,7 +50,8 @@ type CouponSeed = {
   usageLimit?: number;
 };
 
-const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1600&q=80`;
+const unsplash = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1600&q=80`;
 
 export const locations: LocationSeed[] = [
   {

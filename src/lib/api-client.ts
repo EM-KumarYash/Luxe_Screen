@@ -19,17 +19,27 @@ export class ApiClientError extends Error {
   }
 }
 
-export async function apiFetch<T>(path: string, init: RequestInit & { json?: unknown } = {}): Promise<T> {
+export async function apiFetch<T>(
+  path: string,
+  init: RequestInit & { json?: unknown } = {},
+): Promise<T> {
   const { json, headers, ...rest } = init;
   let response: Response;
   try {
     response = await fetch(path, {
       ...rest,
-      headers: { ...(json === undefined ? {} : { "Content-Type": "application/json" }), ...headers },
+      headers: {
+        ...(json === undefined ? {} : { "Content-Type": "application/json" }),
+        ...headers,
+      },
       body: json === undefined ? rest.body : JSON.stringify(json),
     });
   } catch {
-    throw new ApiClientError(0, "NETWORK_ERROR", "Network error. Check your connection and try again.");
+    throw new ApiClientError(
+      0,
+      "NETWORK_ERROR",
+      "Network error. Check your connection and try again.",
+    );
   }
 
   const body = await response.json().catch(() => null);

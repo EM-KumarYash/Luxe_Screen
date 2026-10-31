@@ -54,9 +54,15 @@ export function Hero() {
 
       <div className="mx-auto w-full max-w-7xl px-4 pt-24 pb-20 sm:px-6 lg:px-8 lg:pb-28">
         <div key={index} className="max-w-2xl animate-fade-in" aria-live="polite">
-          <p className="text-xs font-semibold tracking-[0.3em] text-gold-400 uppercase">{slide.eyebrow}</p>
-          <h1 className="mt-4 font-display text-4xl leading-tight text-white sm:text-6xl">{slide.title}</h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-zinc-300 sm:text-lg">{slide.text}</p>
+          <p className="text-xs font-semibold tracking-[0.3em] text-gold-400 uppercase">
+            {slide.eyebrow}
+          </p>
+          <h1 className="mt-4 font-display text-4xl leading-tight text-white sm:text-6xl">
+            {slide.title}
+          </h1>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-zinc-300 sm:text-lg">
+            {slide.text}
+          </p>
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <ButtonLink href="/booking" size="lg">

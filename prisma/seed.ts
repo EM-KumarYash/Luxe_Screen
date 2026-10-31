@@ -62,7 +62,14 @@ async function main() {
     }
   }
 
-  for (const { code, discountType, discountValue, minOrderAmount, maxDiscount, ...rest } of coupons) {
+  for (const {
+    code,
+    discountType,
+    discountValue,
+    minOrderAmount,
+    maxDiscount,
+    ...rest
+  } of coupons) {
     const data = {
       ...rest,
       discountType,
