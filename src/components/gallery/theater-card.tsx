@@ -8,8 +8,11 @@ import type { TheaterDTO } from "@/types";
 export function TheaterCard({
   theater,
   onViewPhotos,
+  eager = false,
 }: {
   theater: TheaterDTO;
+  /** Load the image eagerly when it is likely above the fold (LCP candidate). */
+  eager?: boolean;
   /** When provided, the image opens the photo viewer. */
   onViewPhotos?: () => void;
 }) {
@@ -18,6 +21,7 @@ export function TheaterCard({
       src={theater.images[0]}
       alt={`${theater.name} theatre`}
       fill
+      loading={eager ? "eager" : undefined}
       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
       className="object-cover transition-transform duration-500 group-hover:scale-105"
     />
