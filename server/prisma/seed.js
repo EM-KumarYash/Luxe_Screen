@@ -1,19 +1,19 @@
-import "./load-env";
+import "./load-env.js";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 
-import { PrismaClient } from "../src/generated/prisma/client";
-import { addOns, coupons, locations, slotTemplates, theaters } from "../src/data/catalog";
+import { PrismaClient } from "@prisma/client";
+import { addOns, coupons, locations, slotTemplates, theaters } from "../src/data/catalog.js";
 
 const prisma = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
 
-const toPaise = (rupees: number) => Math.round(rupees * 100);
+const toPaise = (rupees) => Math.round(rupees * 100);
 
 // Upserts keyed on natural keys (slug/code) make the seed safe to re-run.
 async function main() {
-  const locationIds = new Map<string, string>();
+  const locationIds = new Map();
   for (const { slug, ...data } of locations) {
     const location = await prisma.location.upsert({
       where: { slug },
@@ -28,7 +28,7 @@ async function main() {
       ...rest,
       basePrice: toPaise(basePrice),
       extraGuestPrice: toPaise(extraGuestPrice),
-      locationId: locationIds.get(locationSlug)!,
+      locationId: locationIds.get(locationSlug),
     };
     const theater = await prisma.theater.upsert({
       where: { slug },

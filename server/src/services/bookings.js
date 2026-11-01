@@ -1,46 +1,31 @@
-import "server-only";
-
 import { randomBytes, randomInt } from "node:crypto";
 
-import { Prisma } from "@/generated/prisma/client";
-import { ApiError } from "@/lib/api";
-import { prisma } from "@/lib/db";
-import { fromDbDate, isSlotClosed, isWithinBookingWindow, toDbDate } from "@/lib/dates";
-import { calculatePrice, evaluateCoupon } from "@/lib/pricing";
-import type {
-  ConfirmBookingInput,
-  CouponValidateInput,
-  CreateBookingInput,
-} from "@/lib/validation";
-import type { BookingDTO, CouponValidationDTO } from "@/types";
+import { Prisma } from "@prisma/client";
+import { ApiError } from "../lib/errors.js";
+import { prisma } from "../lib/db.js";
+import { fromDbDate, isSlotClosed, isWithinBookingWindow, toDbDate } from "@luxe/shared/dates";
+import { calculatePrice, evaluateCoupon } from "@luxe/shared/pricing";
 
 /** How long a pending booking holds its slot while the customer pays. */
 export const HOLD_MINUTES = 10;
 
-type Db = Prisma.TransactionClient | typeof prisma;
-
 const REFERENCE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I
 
-function generateReference(): string {
+function generateReference() {
   let code = "";
   for (let i = 0; i < 8; i++) code += REFERENCE_ALPHABET[randomInt(REFERENCE_ALPHABET.length)];
   return `LXS-${code}`;
 }
 
-const slotKey = (theaterId: string, slotId: string, date: string) =>
-  `${theaterId}:${slotId}:${date}`;
+const slotKey = (theaterId, slotId, date) => `${theaterId}:${slotId}:${date}`;
 
 /**
  * Prices a cart on the server from catalogue data. Client-sent prices are never trusted.
  */
 async function buildQuote(
-  input: {
-    theaterId: string;
-    guests: number;
-    items: { optionId: string; quantity: number }[];
-    couponCode?: string;
-  },
-  db: Db = prisma,
+  input,
+
+  db = prisma,
 ) {
   const theater = await db.theater.findFirst({
     where: { id: input.theaterId, isActive: true, location: { status: "ACTIVE" } },
@@ -70,13 +55,13 @@ async function buildQuote(
   }
   const optionsById = new Map(options.map((o) => [o.id, o]));
   const lines = input.items.map((item) => {
-    const option = optionsById.get(item.optionId)!;
+    const option = optionsById.get(item.optionId);
     return { option, quantity: item.quantity, price: option.price };
   });
 
   const base = calculatePrice({ theater, guests: input.guests, items: lines });
 
-  let coupon: Awaited<ReturnType<typeof db.coupon.findUnique>> = null;
+  let coupon = null;
   let discountAmount = 0;
   if (input.couponCode) {
     coupon = await db.coupon.findUnique({ where: { code: input.couponCode } });
@@ -95,11 +80,11 @@ async function buildQuote(
   };
 }
 
-export async function validateCoupon(input: CouponValidateInput): Promise<CouponValidationDTO> {
+export async function validateCoupon(input) {
   const quote = await buildQuote({ ...input, couponCode: input.code });
   return {
-    code: quote.coupon!.code,
-    description: quote.coupon!.description,
+    code: quote.coupon.code,
+    description: quote.coupon.description,
     discount: quote.price.discountAmount,
     quote: quote.price,
   };
@@ -114,11 +99,9 @@ const bookingInclude = {
     orderBy: { id: "asc" },
     include: { addOn: { select: { name: true, category: true } } },
   },
-} satisfies Prisma.BookingInclude;
+};
 
-type BookingRow = Prisma.BookingGetPayload<{ include: typeof bookingInclude }>;
-
-function toBookingDTO(b: BookingRow, now: Date = new Date()): BookingDTO {
+function toBookingDTO(b, now = new Date()) {
   // Holds expire lazily: report an elapsed pending hold as EXPIRED.
   const expired = b.status === "PENDING" && b.holdExpiresAt !== null && b.holdExpiresAt <= now;
   return {
@@ -132,7 +115,7 @@ function toBookingDTO(b: BookingRow, now: Date = new Date()): BookingDTO {
     guests: b.guests,
     customer: { name: b.customerName, phone: b.phone, email: b.email },
     occasion: b.occasion,
-    occasionDetails: (b.occasionDetails as BookingDTO["occasionDetails"]) ?? null,
+    occasionDetails: b.occasionDetails ?? null,
     specialRequests: b.specialRequests,
     theater: {
       id: b.theater.id,
@@ -164,7 +147,7 @@ function toBookingDTO(b: BookingRow, now: Date = new Date()): BookingDTO {
   };
 }
 
-export async function getBooking(id: string): Promise<BookingDTO | null> {
+export async function getBooking(id) {
   const booking = await prisma.booking.findUnique({ where: { id }, include: bookingInclude });
   return booking ? toBookingDTO(booking) : null;
 }
@@ -173,7 +156,7 @@ export async function getBooking(id: string): Promise<BookingDTO | null> {
  * Creates a PENDING booking that holds the slot for HOLD_MINUTES.
  * The unique `activeSlotKey` guarantees only one live hold per theatre/slot/date.
  */
-export async function createBooking(input: CreateBookingInput): Promise<BookingDTO> {
+export async function createBooking(input) {
   const now = new Date();
   if (!isWithinBookingWindow(input.date, now)) {
     throw new ApiError(
@@ -264,12 +247,12 @@ export async function createBooking(input: CreateBookingInput): Promise<BookingD
  * Simulated payment gateway callback. Idempotent: confirming an already
  * confirmed booking returns it unchanged.
  */
-export async function confirmBooking(input: ConfirmBookingInput): Promise<BookingDTO> {
+export async function confirmBooking(input) {
   const now = new Date();
   const booking = await prisma.booking.findUnique({ where: { id: input.bookingId } });
   if (!booking) throw new ApiError(404, "NOT_FOUND", "Booking not found.");
 
-  if (booking.status === "CONFIRMED") return (await getBooking(booking.id))!;
+  if (booking.status === "CONFIRMED") return await getBooking(booking.id);
   if (booking.status !== "PENDING") {
     throw new ApiError(409, "BOOKING_NOT_PAYABLE", "This booking can no longer be paid for.");
   }
@@ -327,5 +310,5 @@ export async function confirmBooking(input: ConfirmBookingInput): Promise<Bookin
     }
   });
 
-  return (await getBooking(booking.id))!;
+  return await getBooking(booking.id);
 }

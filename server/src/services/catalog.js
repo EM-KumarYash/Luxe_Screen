@@ -1,18 +1,10 @@
-import "server-only";
-
-import { cacheLife, cacheTag } from "next/cache";
-
-import type { Prisma } from "@/generated/prisma/client";
-import { prisma } from "@/lib/db";
-import type { AddOnCategory, AddOnDTO, LocationDTO, TheaterDTO } from "@/types";
+import { prisma } from "../lib/db.js";
 
 export const theaterInclude = {
   location: { select: { slug: true, name: true, city: true } },
-} satisfies Prisma.TheaterInclude;
+};
 
-type TheaterRow = Prisma.TheaterGetPayload<{ include: typeof theaterInclude }>;
-
-export function toTheaterDTO(t: TheaterRow): TheaterDTO {
+export function toTheaterDTO(t) {
   return {
     id: t.id,
     slug: t.slug,
@@ -38,11 +30,9 @@ export const addOnInclude = {
     orderBy: { sortOrder: "asc" },
     select: { id: true, name: true, price: true },
   },
-} satisfies Prisma.AddOnInclude;
+};
 
-type AddOnRow = Prisma.AddOnGetPayload<{ include: typeof addOnInclude }>;
-
-export function toAddOnDTO(a: AddOnRow): AddOnDTO {
+export function toAddOnDTO(a) {
   return {
     id: a.id,
     slug: a.slug,
@@ -56,22 +46,14 @@ export function toAddOnDTO(a: AddOnRow): AddOnDTO {
 
 // Catalogue reads change rarely, so they are cached (tag "catalog") and can be
 // rendered into the static shell. Booking availability is never cached.
-export async function listLocations(): Promise<LocationDTO[]> {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("catalog");
-
+export async function listLocations() {
   return prisma.location.findMany({
     orderBy: [{ status: "asc" }, { city: "asc" }],
     select: { id: true, slug: true, name: true, city: true, address: true, status: true },
   });
 }
 
-export async function listTheaters(filter: { location?: string } = {}): Promise<TheaterDTO[]> {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("catalog");
-
+export async function listTheaters(filter = {}) {
   const theaters = await prisma.theater.findMany({
     where: {
       isActive: true,
@@ -83,11 +65,7 @@ export async function listTheaters(filter: { location?: string } = {}): Promise<
   return theaters.map(toTheaterDTO);
 }
 
-export async function getTheaterBySlug(slug: string): Promise<TheaterDTO | null> {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("catalog");
-
+export async function getTheaterBySlug(slug) {
   const theater = await prisma.theater.findFirst({
     where: { slug, isActive: true },
     include: theaterInclude,
@@ -95,11 +73,7 @@ export async function getTheaterBySlug(slug: string): Promise<TheaterDTO | null>
   return theater ? toTheaterDTO(theater) : null;
 }
 
-export async function listAddOns(filter: { category?: AddOnCategory } = {}): Promise<AddOnDTO[]> {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("catalog");
-
+export async function listAddOns(filter = {}) {
   const addOns = await prisma.addOn.findMany({
     where: { isActive: true, ...(filter.category ? { category: filter.category } : {}) },
     include: addOnInclude,

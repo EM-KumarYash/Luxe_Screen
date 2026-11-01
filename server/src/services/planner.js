@@ -1,15 +1,11 @@
-import "server-only";
+import { ApiError } from "../lib/errors.js";
+import { prisma } from "../lib/db.js";
+import { rupeesToPaise } from "@luxe/shared/money";
+import { planExperience } from "@luxe/shared/planner";
 
-import { ApiError } from "@/lib/api";
-import { prisma } from "@/lib/db";
-import { rupeesToPaise } from "@/lib/money";
-import { planExperience } from "@/lib/planner";
-import type { PlannerInput } from "@/lib/validation";
-import type { PlannerResponseDTO } from "@/types";
+import { addOnInclude, theaterInclude, toAddOnDTO, toTheaterDTO } from "./catalog.js";
 
-import { addOnInclude, theaterInclude, toAddOnDTO, toTheaterDTO } from "./catalog";
-
-export async function recommendExperience(input: PlannerInput): Promise<PlannerResponseDTO> {
+export async function recommendExperience(input) {
   const location = await prisma.location.findUnique({ where: { slug: input.location } });
   if (!location || location.status !== "ACTIVE") {
     throw new ApiError(422, "LOCATION_UNAVAILABLE", "This location is not open for bookings yet.");

@@ -1,27 +1,17 @@
-import "server-only";
+import { ApiError } from "../lib/errors.js";
+import { prisma } from "../lib/db.js";
+import { isSlotClosed, isWithinBookingWindow, toDbDate } from "@luxe/shared/dates";
 
-import { ApiError } from "@/lib/api";
-import { prisma } from "@/lib/db";
-import { isSlotClosed, isWithinBookingWindow, toDbDate } from "@/lib/dates";
-import type { AvailabilityDTO, SlotStatus } from "@/types";
-
-import { theaterInclude, toTheaterDTO } from "./catalog";
+import { theaterInclude, toTheaterDTO } from "./catalog.js";
 
 /** Bookings that currently hold a slot: confirmed, or pending with a live hold. */
-export function activeHoldFilter(now: Date) {
+export function activeHoldFilter(now) {
   return {
-    OR: [
-      { status: "CONFIRMED" as const },
-      { status: "PENDING" as const, holdExpiresAt: { gt: now } },
-    ],
+    OR: [{ status: "CONFIRMED" }, { status: "PENDING", holdExpiresAt: { gt: now } }],
   };
 }
 
-export async function getAvailability(query: {
-  date: string;
-  location?: string;
-  theaterId?: string;
-}): Promise<AvailabilityDTO> {
+export async function getAvailability(query) {
   const now = new Date();
   if (!isWithinBookingWindow(query.date, now)) {
     throw new ApiError(
@@ -59,7 +49,7 @@ export async function getAvailability(query: {
     theaters: theaters.map((theater) => ({
       ...toTheaterDTO(theater),
       slots: theater.slots.map((slot) => {
-        let status: SlotStatus = "AVAILABLE";
+        let status = "AVAILABLE";
         if (isSlotClosed(query.date, slot.startTime, now)) status = "CLOSED";
         else if (takenSlotIds.has(slot.id)) status = "BOOKED";
         return {

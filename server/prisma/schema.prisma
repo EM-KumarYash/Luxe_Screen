@@ -5,8 +5,7 @@
 // - Booking dates are stored as calendar dates (no time) in the business timezone (IST).
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {

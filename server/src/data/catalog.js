@@ -1,59 +1,9 @@
-// Seed catalogue for Luxe Screens. Consumed by prisma/seed.ts.
+// Seed catalogue for Luxe Screens. Consumed by prisma/seed.js.
 // Prices are written in rupees for readability and converted to paise on insert.
 
-type LocationSeed = {
-  slug: string;
-  name: string;
-  city: string;
-  address?: string;
-  status: "ACTIVE" | "COMING_SOON";
-};
+const unsplash = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1600&q=80`;
 
-type TheaterSeed = {
-  slug: string;
-  locationSlug: string;
-  name: string;
-  tagline: string;
-  description: string;
-  basePrice: number;
-  includedGuests: number;
-  extraGuestPrice: number;
-  maxCapacity: number;
-  screen: string;
-  sound: string;
-  images: string[];
-  amenities: string[];
-  rating: number;
-};
-
-type SlotSeed = { label: string; startTime: string; endTime: string };
-
-type AddOnSeed = {
-  slug: string;
-  name: string;
-  description: string;
-  category: "CAKE" | "DECOR" | "GIFT";
-  image: string;
-  options: { name: string; price: number }[];
-};
-
-type CouponSeed = {
-  code: string;
-  description: string;
-  discountType: "PERCENT" | "FLAT";
-  /** Percent for PERCENT, rupees for FLAT. */
-  discountValue: number;
-  minOrderAmount: number;
-  maxDiscount?: number;
-  validFrom: string;
-  validUntil: string;
-  usageLimit?: number;
-};
-
-const unsplash = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1600&q=80`;
-
-export const locations: LocationSeed[] = [
+export const locations = [
   {
     slug: "hyderabad-jubilee-hills",
     name: "Jubilee Hills",
@@ -73,14 +23,14 @@ export const locations: LocationSeed[] = [
   { slug: "delhi-hauz-khas", name: "Hauz Khas", city: "New Delhi", status: "COMING_SOON" },
 ];
 
-export const slotTemplates: SlotSeed[] = [
+export const slotTemplates = [
   { label: "Morning", startTime: "10:00", endTime: "13:00" },
   { label: "Afternoon", startTime: "13:30", endTime: "16:30" },
   { label: "Evening", startTime: "17:00", endTime: "20:00" },
   { label: "Night", startTime: "20:30", endTime: "23:30" },
 ];
 
-export const theaters: TheaterSeed[] = [
+export const theaters = [
   {
     slug: "velvet-room",
     locationSlug: "hyderabad-jubilee-hills",
@@ -209,7 +159,7 @@ export const theaters: TheaterSeed[] = [
   },
 ];
 
-export const addOns: AddOnSeed[] = [
+export const addOns = [
   // Cakes
   {
     slug: "chocolate-truffle-cake",
@@ -344,7 +294,7 @@ export const addOns: AddOnSeed[] = [
   },
 ];
 
-export const coupons: CouponSeed[] = [
+export const coupons = [
   {
     code: "LUXE10",
     description: "10% off on bookings above ₹1,500 (up to ₹500)",

@@ -1,11 +1,8 @@
-import "server-only";
+import { Prisma } from "@prisma/client";
+import { ApiError } from "../lib/errors.js";
+import { prisma } from "../lib/db.js";
 
-import { Prisma } from "@/generated/prisma/client";
-import { ApiError } from "@/lib/api";
-import { prisma } from "@/lib/db";
-import type { ContactInput, WaitlistInput } from "@/lib/validation";
-
-export async function joinWaitlist(input: WaitlistInput) {
+export async function joinWaitlist(input) {
   const location = await prisma.location.findUnique({ where: { slug: input.location } });
   if (!location) throw new ApiError(404, "NOT_FOUND", "Unknown location.");
 
@@ -32,7 +29,7 @@ export async function joinWaitlist(input: WaitlistInput) {
   }
 }
 
-export async function submitContactMessage(input: ContactInput) {
+export async function submitContactMessage(input) {
   const message = await prisma.contactMessage.create({ data: input });
   return { id: message.id };
 }
