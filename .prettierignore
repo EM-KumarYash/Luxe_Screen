@@ -1,5 +1,5 @@
 node_modules
-.next
-src/generated
-prisma/migrations
+dist
+coverage
+server/prisma/migrations
 package-lock.json
