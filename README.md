@@ -19,30 +19,32 @@ A full-stack booking platform for private luxury theatres. Customers browse thea
 
 ## Quick start
 
-> **New to the project?** Follow the step-by-step **[Setup Guide](./SETUP_GUIDE.md)**. It covers installing Node.js and PostgreSQL, creating the database (pgAdmin or command line), configuring `.env.local` and troubleshooting.
+> **New to the project?** Follow the step-by-step **[Windows Setup Guide](./SETUP_GUIDE.md)**. It covers installing Node.js and PostgreSQL, creating the database (pgAdmin or SQL Shell), configuring `.env.local` and troubleshooting.
 
-**Prerequisites:** Node.js 20.19+ and PostgreSQL 14+, either local or via Docker.
+All commands below are for **Windows PowerShell** (the default terminal in VS Code on Windows).
 
-```bash
+**Prerequisites:** Windows 10/11, Node.js 20.19+, Git, and PostgreSQL 14+ (installed, or via Docker Desktop).
+
+```powershell
 git clone <repo-url> luxe-screens
 cd luxe-screens
 npm install                  # also generates the Prisma client
-cp .env.example .env.local   # then edit DATABASE_URL if needed
+Copy-Item .env.example .env.local   # then edit DATABASE_URL if needed
 ```
 
 Start a database (pick one):
 
-```bash
-# Option A: Docker (matches .env.example, nothing to edit)
-docker compose up -d
+```powershell
+# Option A: installed PostgreSQL. Create the database, then set your password in DATABASE_URL
+& "C:\Program Files\PostgreSQL\17\bin\psql.exe" -U postgres -h localhost -c "CREATE DATABASE luxe_screens;"
 
-# Option B: local PostgreSQL. Create the database, then set your password in DATABASE_URL
-createdb -U postgres luxe_screens
+# Option B: Docker Desktop (matches .env.example, nothing to edit)
+docker compose up -d
 ```
 
 Create the tables, load sample data and run:
 
-```bash
+```powershell
 npm run db:deploy    # applies prisma/migrations
 npm run db:seed      # 5 locations, 6 theatres, 24 slots, 12 add-ons, 4 coupons
 npm run dev          # http://localhost:3000
@@ -134,7 +136,7 @@ This extends the suggested schema with `Location`, `AddOnOption`, `Coupon`, `Wai
 
 ## Testing
 
-```bash
+```powershell
 npm test          # 21 unit tests: pricing, coupons, IST date rules, planner
 npm run typecheck
 npm run lint
@@ -146,8 +148,13 @@ The full journeys were also verified end to end in headless Chrome against a pro
 
 1. Create a PostgreSQL database, for example Neon via the Vercel Marketplace.
 2. Import the repo in Vercel and set `DATABASE_URL` and `NEXT_PUBLIC_BASE_URL`.
-3. Apply migrations and seed once against the production database:
-   `DATABASE_URL=<prod-url> npm run db:deploy && DATABASE_URL=<prod-url> npm run db:seed`
+3. Apply migrations and seed once against the production database (PowerShell):
+   ```powershell
+   $env:DATABASE_URL = "<prod-url>"
+   npm run db:deploy
+   npm run db:seed
+   Remove-Item Env:DATABASE_URL
+   ```
 4. Deploy. The build runs `prisma generate && next build`.
 
 ## Known limitations
