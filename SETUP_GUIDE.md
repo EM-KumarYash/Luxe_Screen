@@ -14,7 +14,7 @@ This guide takes a **Windows 10 / 11** laptop from nothing installed to the webs
 4. [Download the project](#4-download-the-project)
 5. [Install the project's packages](#5-install-the-projects-packages)
 6. [Create the database](#6-create-the-database) (choose **Option A** or **Option B**)
-7. [Create the settings file (.env.local)](#7-create-the-settings-file-envlocal)
+7. [Create the settings file (server\.env)](#7-create-the-settings-file-serverenv)
 8. [Create the tables and load sample data](#8-create-the-tables-and-load-sample-data)
 9. [Run the website](#9-run-the-website)
 10. [Check everything works](#10-check-everything-works)
@@ -25,9 +25,19 @@ This guide takes a **Windows 10 / 11** laptop from nothing installed to the webs
 
 ## 1. What you will set up
 
-| Part           | What it is                                                     |
+The project has three parts in one repository:
+
+| Folder    | What it is                                            | Runs at                     |
+| --------- | ----------------------------------------------------- | --------------------------- |
+| `client\` | The website: **React 19** + Vite                      | <http://localhost:5173>     |
+| `server\` | The API: **Node.js + Express**, talks to the database | <http://localhost:4000/api> |
+| `shared\` | Pricing, validation and date rules used by both       | (not run on its own)        |
+
+You will install:
+
+| Software       | Why                                                            |
 | -------------- | -------------------------------------------------------------- |
-| **Node.js**    | Runs the website (frontend and backend are one Next.js app)    |
+| **Node.js**    | Runs the website and the API                                   |
 | **Git**        | Downloads the code from GitHub                                 |
 | **PostgreSQL** | The database that stores theatres, bookings, coupons and so on |
 
@@ -42,7 +52,7 @@ You only need **one** way of running PostgreSQL:
 
 ### 2.1 Node.js (required)
 
-1. Go to <https://nodejs.org> and download the **LTS** version for Windows (`.msi`, v20.19 or newer).
+1. Go to <https://nodejs.org> and download the **LTS** version for Windows (`.msi`, **v20.19 or newer**; v22 recommended).
 2. Run the installer and keep the default options.
 3. **Restart VS Code / any open terminals** so they pick up Node.js.
 
@@ -112,7 +122,7 @@ The repository is **private**, so the owner must first add your GitHub account a
 npm install
 ```
 
-This downloads all libraries. It takes 1–3 minutes and also prepares the database client automatically. Warnings in yellow are normal; red **errors** are not (see [Troubleshooting](#12-troubleshooting)).
+One command installs everything for `client`, `server` and `shared`. It takes 1–3 minutes and also prepares the database client automatically (`✔ Generated Prisma Client`). Warnings in yellow are normal; red **errors** are not (see [Troubleshooting](#12-troubleshooting)).
 
 ---
 
@@ -173,7 +183,7 @@ In pgAdmin, right-click **Databases → Refresh**. `luxe_screens` should be list
 & "C:\Program Files\PostgreSQL\17\bin\psql.exe" -U postgres -h localhost -c "\l"
 ```
 
-✅ Done. Go to [step 7](#7-create-the-settings-file-envlocal).
+✅ Done. Go to [step 7](#7-create-the-settings-file-serverenv).
 
 ---
 
@@ -202,31 +212,32 @@ Check it's running:
 docker compose ps     # STATUS should show "running" / "healthy"
 ```
 
-✅ Done. Go to [step 7](#7-create-the-settings-file-envlocal).
+✅ Done. Go to [step 7](#7-create-the-settings-file-serverenv).
 
 > **Note:** if PostgreSQL is _also_ installed on Windows, both want port 5432 and will clash. Either stop the Windows service (see [Troubleshooting](#12-troubleshooting)) or use Option A only.
 
 ---
 
-## 7. Create the settings file (.env.local)
+## 7. Create the settings file (server\.env)
 
-The project needs to know how to connect to your database. In the `Luxe_Screen` folder, copy the example file:
+The API needs to know how to connect to your database. In the `Luxe_Screen` folder, copy the example file:
 
 ```powershell
-Copy-Item .env.example .env.local
+Copy-Item server\.env.example server\.env
 ```
 
-Open it in Notepad (or open `.env.local` from VS Code's file list):
+Open it in Notepad (or open `server\.env` from VS Code's file list):
 
 ```powershell
-notepad .env.local
+notepad server\.env
 ```
 
 It looks like this:
 
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/luxe_screens?schema=public"
-NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+PORT=4000
+CLIENT_ORIGIN="http://localhost:5173"
 ```
 
 The `DATABASE_URL` format is:
@@ -246,13 +257,15 @@ postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE?schema=public
 DATABASE_URL="postgresql://postgres:mypassword@localhost:5432/luxe_screens?schema=public"
 ```
 
-Save the file (`Ctrl + S`) and close it.
+Leave `PORT` and `CLIENT_ORIGIN` as they are. Save the file (`Ctrl + S`) and close it.
 
 > **Password has special characters** like `@ # % / :`? Replace them with their URL codes, for example `@` → `%40`, `#` → `%23`, `%` → `%25`. So `my@pass` becomes `my%40pass`.
 
-> `.env.local` contains your password, so it is **never uploaded to GitHub** (git ignores it).
+> `server\.env` contains your password, so it is **never uploaded to GitHub** (git ignores it).
 
-> **Check the file name:** it must be exactly `.env.local`, not `.env.local.txt`. In File Explorer, turn on **View → Show → File name extensions** to confirm.
+> **Check the file name:** it must be exactly `.env` inside the `server` folder, not `.env.txt`. In File Explorer, turn on **View → Show → File name extensions** to confirm.
+
+> The website (`client`) needs **no** settings file for local development.
 
 ---
 
@@ -287,38 +300,39 @@ Your database now has all tables, plus sample theatres, time slots, cakes, decor
 
 ## 9. Run the website
 
+One command starts **both** the API and the website:
+
 ```powershell
 npm run dev
 ```
 
-Wait for:
+Wait until you see both lines (yellow `[api]` and cyan `[web]`):
 
 ```
-▲ Next.js 16.x (Turbopack)
-- Local:   http://localhost:3000
-✓ Ready
+[api] Luxe Screens API listening on http://localhost:4000/api
+[web]   ➜  Local:   http://localhost:5173/
 ```
 
-`Ctrl + Click` the **Local** link (or type it into Chrome / Edge).
+`Ctrl + Click` the **http://localhost:5173** link (or type it into Chrome / Edge).
 
-> If port 3000 is busy, Next.js automatically uses the next free port (3001, 3002, …). **Use the exact URL shown in the terminal.**
+> The website calls the API through `/api`, which Vite forwards to port 4000 automatically. Both must be running, which is why `npm run dev` starts them together.
 
 > If **Windows Defender Firewall** asks about Node.js, click **Allow**. It is only used on your own machine.
 
-To stop the website, click into the terminal and press `Ctrl + C`.
+To stop both, click into the terminal and press `Ctrl + C`.
 
 ---
 
 ## 10. Check everything works
 
-| Check               | How                                               | Expected                                                  |
-| ------------------- | ------------------------------------------------- | --------------------------------------------------------- |
-| Database connection | Open `http://localhost:3000/api/health`           | `{"status":"ok","database":"up"}`                         |
-| Home page           | Open `http://localhost:3000`                      | Slideshow, services, theatres, FAQ                        |
-| Gallery             | Click **Theatres**                                | 6 theatres; search and filters work                       |
-| AI Planner          | Click **AI Planner**, then **Plan my experience** | A recommended theatre and package                         |
-| Booking             | Click **Book Now** and complete all 9 steps       | "Booking confirmed!" with a reference like `LXS-AB12CD34` |
-| Waitlist            | Click **New Locations** and submit the form       | "You're on the list!"                                     |
+| Check          | How                                               | Expected                                                  |
+| -------------- | ------------------------------------------------- | --------------------------------------------------------- |
+| API + database | Open `http://localhost:4000/api/health`           | `{"status":"ok","database":"up"}`                         |
+| Home page      | Open `http://localhost:5173`                      | Slideshow, services, theatres, FAQ                        |
+| Gallery        | Click **Theatres**                                | 6 theatres; search and filters work                       |
+| AI Planner     | Click **AI Planner**, then **Plan my experience** | A recommended theatre and package                         |
+| Booking        | Click **Book Now** and complete all 9 steps       | "Booking confirmed!" with a reference like `LXS-AB12CD34` |
+| Waitlist       | Click **New Locations** and submit the form       | "You're on the list!"                                     |
 
 **Test coupons:** `LUXE10`, `FIRSTSHOW`, `CELEBRATE20` (valid) · `MONSOON25` (expired, to see the error).
 
@@ -349,16 +363,17 @@ npm run dev
 
 (Option B only: open Docker Desktop first, and run `docker compose up -d` if the database isn't running.)
 
-| Command                          | What it does                                       |
-| -------------------------------- | -------------------------------------------------- |
-| `npm run dev`                    | Start the website in development mode              |
-| `npm run build` then `npm start` | Build and run the production version               |
-| `npm test`                       | Run the unit tests                                 |
-| `npm run db:studio`              | Browse the database in your browser                |
-| `npm run db:seed`                | Reload the sample data                             |
-| `npm run db:reset`               | ⚠️ Delete **all** data, recreate tables and reseed |
-| `docker compose down`            | (Option B) Stop the Docker database; data is kept  |
-| `docker compose down -v`         | (Option B) ⚠️ Stop it **and delete** all its data  |
+| Command                                     | What it does                                                   |
+| ------------------------------------------- | -------------------------------------------------------------- |
+| `npm run dev`                               | Start the API (port 4000) and website (port 5173) together     |
+| `npm run dev:server` / `npm run dev:client` | Start just one of them                                         |
+| `npm test`                                  | Run the tests                                                  |
+| `npm run build` then `npm run preview`      | Build and preview the production website (API must be running) |
+| `npm run db:studio`                         | Browse the database in your browser                            |
+| `npm run db:seed`                           | Reload the sample data                                         |
+| `npm run db:reset`                          | ⚠️ Delete **all** data, recreate tables and reseed             |
+| `docker compose down`                       | (Option B) Stop the Docker database; data is kept              |
+| `docker compose down -v`                    | (Option B) ⚠️ Stop it **and delete** all its data              |
 
 ### Getting the latest code later
 
@@ -373,20 +388,21 @@ npm run dev
 
 ## 12. Troubleshooting
 
-| Problem / error message                                               | Cause                                                                    | Fix                                                                                                                                                                     |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `node` / `npm` / `git` _is not recognized_                            | Not installed, or the terminal was open during install                   | Install it, then **close and reopen** VS Code / PowerShell                                                                                                              |
-| `running scripts is disabled on this system`                          | PowerShell execution policy                                              | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then reopen the terminal                                                                                     |
-| `The datasource.url property is required` / `DATABASE_URL is not set` | `.env.local` missing, misnamed (`.env.local.txt`) or in the wrong folder | Redo [step 7](#7-create-the-settings-file-envlocal) inside the `Luxe_Screen` folder and check the file name                                                             |
-| `password authentication failed for user "postgres"`                  | Wrong password in `.env.local`                                           | Fix the password in `DATABASE_URL` (see the special-characters note in step 7)                                                                                          |
-| `Can't reach database server at localhost:5432`                       | PostgreSQL isn't running                                                 | **Option A:** press `Win + R`, type `services.msc`, find **postgresql-x64-17**, right-click → **Start**. **Option B:** open Docker Desktop, then `docker compose up -d` |
-| `database "luxe_screens" does not exist`                              | Database not created                                                     | Do [step 6](#6-create-the-database)                                                                                                                                     |
-| `port 5432 is already allocated` (Docker)                             | Installed PostgreSQL already uses 5432                                   | Stop the **postgresql-x64-17** service in `services.msc`, or just use Option A                                                                                          |
-| `Port 3000 is in use`                                                 | Another app uses 3000                                                    | Nothing to do: use the URL the terminal prints (e.g. `:3001`)                                                                                                           |
-| `psql` _is not recognized_                                            | PostgreSQL's `bin` folder isn't on PATH                                  | Use **SQL Shell (psql)** from the Start menu, or the full path `& "C:\Program Files\PostgreSQL\17\bin\psql.exe"`                                                        |
-| Pages load but show no theatres                                       | Sample data not loaded                                                   | Run `npm run db:seed`                                                                                                                                                   |
-| `EPERM` / `EBUSY` / "operation not permitted" during `npm install`    | OneDrive or antivirus is locking files                                   | Move the project out of OneDrive (e.g. `C:\Projects`), close other editors, run `npm install` again                                                                     |
-| `Filename too long` during `git clone`                                | Windows path length limit                                                | Run `git config --global core.longpaths true`, then clone again into a short path like `C:\Projects`                                                                    |
-| Something is stuck or behaves oddly                                   | Stale build cache                                                        | Stop the server (`Ctrl + C`), run `Remove-Item -Recurse -Force .next`, then `npm run dev`                                                                               |
+| Problem / error message                                                        | Cause                                                               | Fix                                                                                                                                                                     |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `node` / `npm` / `git` _is not recognized_                                     | Not installed, or the terminal was open during install              | Install it, then **close and reopen** VS Code / PowerShell                                                                                                              |
+| `running scripts is disabled on this system`                                   | PowerShell execution policy                                         | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then reopen the terminal                                                                                     |
+| `The datasource.url property is required` / `DATABASE_URL is not set`          | `server\.env` missing, misnamed (`.env.txt`) or in the wrong folder | Redo [step 7](#7-create-the-settings-file-serverenv); the file must be `Luxe_Screen\server\.env`                                                                        |
+| `password authentication failed for user "postgres"`                           | Wrong password in `server\.env`                                     | Fix the password in `DATABASE_URL` (see the special-characters note in step 7)                                                                                          |
+| `Can't reach database server at localhost:5432`                                | PostgreSQL isn't running                                            | **Option A:** press `Win + R`, type `services.msc`, find **postgresql-x64-17**, right-click → **Start**. **Option B:** open Docker Desktop, then `docker compose up -d` |
+| `database "luxe_screens" does not exist`                                       | Database not created                                                | Do [step 6](#6-create-the-database)                                                                                                                                     |
+| Website shows **"Something went wrong… check that the API server is running"** | The API isn't running or crashed                                    | Look at the yellow `[api]` lines in the terminal for the real error; make sure you started with `npm run dev`, not only the client                                      |
+| `EADDRINUSE ... :4000`                                                         | Another program uses port 4000                                      | Close it, or find it with `netstat -ano \| findstr :4000` and end that PID in Task Manager                                                                              |
+| Website opens on `:5174` instead of `:5173`                                    | Port 5173 was busy                                                  | Nothing to do: use the URL the terminal prints                                                                                                                          |
+| `port 5432 is already allocated` (Docker)                                      | Installed PostgreSQL already uses 5432                              | Stop the **postgresql-x64-17** service in `services.msc`, or just use Option A                                                                                          |
+| `psql` _is not recognized_                                                     | PostgreSQL's `bin` folder isn't on PATH                             | Use **SQL Shell (psql)** from the Start menu, or the full path `& "C:\Program Files\PostgreSQL\17\bin\psql.exe"`                                                        |
+| Pages load but show no theatres                                                | Sample data not loaded                                              | Run `npm run db:seed`                                                                                                                                                   |
+| `EPERM` / `EBUSY` / "operation not permitted" during `npm install`             | OneDrive or antivirus is locking files                              | Move the project out of OneDrive (e.g. `C:\Projects`), close other editors, run `npm install` again                                                                     |
+| `Filename too long` during `git clone`                                         | Windows path length limit                                           | Run `git config --global core.longpaths true`, then clone again into a short path like `C:\Projects`                                                                    |
 
 Still stuck? Copy the **full error message** from the terminal and send it to the person who shared the project.

@@ -2,7 +2,7 @@
 
 A full-stack booking platform for private luxury theatres. Customers browse theatres, get an AI-style recommendation for their occasion, and complete a 9-step booking with cakes, decor, gifts, coupons and a simulated payment gateway.
 
-**Stack:** Next.js 16 (App Router, Cache Components) · React 19 · TypeScript · Tailwind CSS v4 · PostgreSQL · Prisma 7 · Zod · React Hook Form · Vitest
+**Stack:** React 19 · Vite · React Router 7 · Tailwind CSS v4 · Node.js · Express 5 · PostgreSQL · Prisma 7 · Zod · React Hook Form · Vitest. Written in plain **JavaScript**.
 
 ---
 
@@ -17,9 +17,30 @@ A full-stack booking platform for private luxury theatres. Customers browse thea
 | **Waitlist**              | Lead capture for upcoming cities, with duplicate detection                                                                                                                                          |
 | **Responsive**            | Tested at 1440 px, 820 px and 390 px with no horizontal overflow and no console errors                                                                                                              |
 
+## Project structure
+
+```
+Luxe_Screen/                 npm workspaces: one `npm install` at the root
+├── client/                  React 19 single-page app (Vite)
+│   ├── src/pages/           One file per route: data `loader` + `Component`
+│   ├── src/components/      booking, gallery, layout, planner, sections, ui, waitlist
+│   ├── src/lib/             API client, helpers
+│   └── src/data/            Static marketing copy
+├── server/                  REST API (Express 5)
+│   ├── src/routes.js        All /api endpoints
+│   ├── src/services/        Business logic + database access (Prisma)
+│   ├── src/lib/             Errors, rate limiting, database client
+│   ├── src/data/            Seed catalogue
+│   └── prisma/              schema.prisma, migrations, seed.js
+├── shared/                  Pure JS used by both: pricing, coupons, IST dates, planner, Zod schemas
+├── docker-compose.yml       Optional local PostgreSQL
+├── vercel.json              Frontend deployment (Vercel)
+└── render.yaml              API deployment (Render)
+```
+
 ## Quick start
 
-> **New to the project?** Follow the step-by-step **[Windows Setup Guide](./SETUP_GUIDE.md)**. It covers installing Node.js and PostgreSQL, creating the database (pgAdmin or SQL Shell), configuring `.env.local` and troubleshooting.
+> **New to the project?** Follow the step-by-step **[Windows Setup Guide](./SETUP_GUIDE.md)**. It covers installing Node.js and PostgreSQL, creating the database (pgAdmin or SQL Shell), configuring `server\.env` and troubleshooting.
 
 All commands below are for **Windows PowerShell** (the default terminal in VS Code on Windows).
 
@@ -28,8 +49,8 @@ All commands below are for **Windows PowerShell** (the default terminal in VS Co
 ```powershell
 git clone https://github.com/EM-KumarYash/Luxe_Screen.git
 cd Luxe_Screen
-npm install                  # also generates the Prisma client
-Copy-Item .env.example .env.local   # then edit DATABASE_URL if needed
+npm install                                      # installs client, server and shared
+Copy-Item server\.env.example server\.env        # then edit DATABASE_URL if needed
 ```
 
 Start a database (pick one):
@@ -38,41 +59,51 @@ Start a database (pick one):
 # Option A: installed PostgreSQL. Create the database, then set your password in DATABASE_URL
 & "C:\Program Files\PostgreSQL\17\bin\psql.exe" -U postgres -h localhost -c "CREATE DATABASE luxe_screens;"
 
-# Option B: Docker Desktop (matches .env.example, nothing to edit)
+# Option B: Docker Desktop (matches server\.env.example, nothing to edit)
 docker compose up -d
 ```
 
 Create the tables, load sample data and run:
 
 ```powershell
-npm run db:deploy    # applies prisma/migrations
+npm run db:deploy    # applies server/prisma/migrations
 npm run db:seed      # 5 locations, 6 theatres, 24 slots, 12 add-ons, 4 coupons
-npm run dev          # http://localhost:3000
+npm run dev          # API on http://localhost:4000, website on http://localhost:5173
 ```
 
 ### Environment variables
 
-| Variable               | Required | Description                                                   |
-| ---------------------- | -------- | ------------------------------------------------------------- |
-| `DATABASE_URL`         | Yes      | PostgreSQL connection string                                  |
-| `NEXT_PUBLIC_BASE_URL` | Yes      | Public URL of the site, used for metadata, sitemap and robots |
+**`server\.env`** (required)
 
-Both the app and the Prisma CLI read `.env.local` first, then `.env`. Real env files are git-ignored; only `.env.example` is committed.
+| Variable        | Description                                                                        |
+| --------------- | ---------------------------------------------------------------------------------- |
+| `DATABASE_URL`  | PostgreSQL connection string                                                       |
+| `PORT`          | API port (default `4000`)                                                          |
+| `CLIENT_ORIGIN` | Frontend URL(s) allowed by CORS, comma-separated (default `http://localhost:5173`) |
 
-### Scripts
+**`client\.env`** (production only)
 
-| Command                           | Purpose                                      |
-| --------------------------------- | -------------------------------------------- |
-| `npm run dev`                     | Start the dev server                         |
-| `npm run build` / `npm start`     | Production build and serve                   |
-| `npm test`                        | Unit tests (Vitest)                          |
-| `npm run typecheck`               | Generate route types and run `tsc`           |
-| `npm run lint` / `npm run format` | ESLint / Prettier                            |
-| `npm run db:migrate`              | Create and apply migrations (development)    |
-| `npm run db:deploy`               | Apply migrations (production)                |
-| `npm run db:seed`                 | Load or refresh sample data (safe to re-run) |
-| `npm run db:reset`                | Drop, re-migrate and re-seed                 |
-| `npm run db:studio`               | Browse the database in Prisma Studio         |
+| Variable       | Description                                                                                                                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `VITE_API_URL` | Public URL of the deployed API, e.g. `https://luxe-screens-api.onrender.com`. Leave empty locally: Vite forwards `/api` to port 4000 |
+
+Real env files are git-ignored; only the `.env.example` files are committed.
+
+### Scripts (run from the root)
+
+| Command                                     | Purpose                                            |
+| ------------------------------------------- | -------------------------------------------------- |
+| `npm run dev`                               | Start API and website together                     |
+| `npm run dev:server` / `npm run dev:client` | Start one of them                                  |
+| `npm run build` / `npm run preview`         | Production build of the website / serve it locally |
+| `npm start`                                 | Start the API in production mode                   |
+| `npm test`                                  | Unit + API tests (Vitest)                          |
+| `npm run lint` / `npm run format`           | ESLint / Prettier                                  |
+| `npm run db:migrate`                        | Create and apply migrations (development)          |
+| `npm run db:deploy`                         | Apply migrations (setup and production)            |
+| `npm run db:seed`                           | Load or refresh sample data (safe to re-run)       |
+| `npm run db:reset`                          | Drop, re-migrate and re-seed                       |
+| `npm run db:studio`                         | Browse the database in Prisma Studio               |
 
 ### Try it
 
@@ -84,23 +115,14 @@ Both the app and the Prisma CLI read `.env.local` first, then `.env`. Real env f
 ## Architecture
 
 ```
-src/
-├── app/                 # Routes (pages + API route handlers)
-│   ├── api/             # REST endpoints (see below)
-│   ├── booking/         # Wizard + /booking/confirmation/[id] receipt
-│   ├── ai-planner/  gallery/  waitlist/
-│   └── layout.tsx, page.tsx, error.tsx, not-found.tsx, robots.ts, sitemap.ts
-├── components/          # booking, gallery, layout, planner, sections, ui, waitlist
-├── data/                # Seed catalogue + static marketing copy
-├── lib/                 # Framework-free domain logic: pricing, dates, planner, validation
-├── server/              # Server-only services that talk to the database
-└── types/               # API contract (DTOs, error codes)
-prisma/                  # schema.prisma, migrations, seed.ts
+Browser ── React SPA (client) ──fetch /api/...──► Express API (server) ──Prisma──► PostgreSQL
+                │                                        │
+                └──── both import shared/ (pricing, validation, dates) ────┘
 ```
 
-- **Pages** are Server Components. Catalogue reads use `"use cache"` (tag `catalog`, 1 hour) so the home, gallery, planner and waitlist pages are prerendered. The booking page is partially prerendered: a static shell plus a request-time wizard.
-- **Server pages call `src/server/*` directly.** Only client components go through the HTTP API.
-- **`src/lib`** holds pure functions shared by the API and the UI. The API is authoritative; the UI only previews prices.
+- **Client:** each route in `client/src/router.jsx` lazy-loads a page module that exports a **loader** (fetches its data from the API before rendering) and a **Component**. Errors and unknown URLs render an error/404 page inside the normal layout. Per-page `<title>` and `<meta>` use React 19's built-in metadata hoisting.
+- **Server:** thin route handlers in `routes.js` validate input with Zod and call services in `src/services/`. Express 5 forwards thrown errors to one `errorHandler`, so every error has the same JSON shape.
+- **Shared:** pure functions with no I/O, so the UI previews prices with exactly the rules the server enforces.
 
 ### API
 
@@ -123,8 +145,6 @@ Notable status codes: `400` validation, `402` payment declined, `409` slot taken
 
 `Location` → `Theater` → `Slot` (daily time windows) · `AddOn` → `AddOnOption` · `Booking` → `CartItem` · `Coupon` · `WaitlistEntry` · `ContactMessage`
 
-This extends the suggested schema with `Location`, `AddOnOption`, `Coupon`, `WaitlistEntry` and `ContactMessage`, which the waitlist, coupon and add-on features need.
-
 ### Key decisions
 
 - **Money is stored as integer paise**, so there's no floating-point drift. Cart items snapshot their name and price, so later catalogue changes never alter a receipt.
@@ -132,33 +152,38 @@ This extends the suggested schema with `Location`, `AddOnOption`, `Coupon`, `Wai
 - **The server prices everything.** Totals are recalculated from catalogue data on every booking; client-sent prices are never trusted.
 - **Payment confirmation is idempotent and race-safe.** It uses a conditional update, and coupon redemption is an atomic SQL increment that respects the usage limit.
 - **Dates use IST.** Bookings are open from today to 60 days ahead, with a 30-minute lead time before each slot.
-- **The "AI" planner is a deterministic, explainable scoring engine** (`src/lib/planner.ts`): capacity fit, occasion mood, budget headroom and rating. Its package builder first secures one item per category, then upgrades within budget. It needs no external API key, so it can't fail at runtime and is unit tested. An LLM could be added later, with this engine as the fallback.
+- **The "AI" planner is a deterministic, explainable scoring engine** (`shared/src/planner.js`): capacity fit, occasion mood, budget headroom and rating. Its package builder first secures one item per category, then upgrades within budget. It needs no external API key, so it can't fail at runtime and is unit tested. An LLM could be added later, with this engine as the fallback.
+- **Prisma uses the `prisma-client-js` generator**, which outputs plain JavaScript, with the `pg` driver adapter.
 
 ## Testing
 
 ```powershell
-npm test          # 21 unit tests: pricing, coupons, IST date rules, planner
-npm run typecheck
+npm test     # 28 tests: pricing, coupons, IST date rules, planner (shared) + API validation, CORS, rate limiting (server)
 npm run lint
 ```
 
-The full journeys were also verified end to end in headless Chrome against a production build: booking (including declined payment and retry), planner deep link, gallery and forms. That covered desktop, tablet and mobile, with no console errors.
+The full journeys were also verified end to end in headless Chrome against the production build: booking (including declined payment and retry), planner deep link, gallery and forms. That covered desktop, tablet and mobile, with no console errors.
 
-## Deploying to Vercel
+## Deployment
 
-1. Create a PostgreSQL database, for example Neon via the Vercel Marketplace.
-2. Import the repo in Vercel and set `DATABASE_URL` and `NEXT_PUBLIC_BASE_URL`.
-3. Apply migrations and seed once against the production database (PowerShell):
+The frontend and the API deploy separately; the database is a managed PostgreSQL such as [Neon](https://neon.tech).
+
+1. **Database:** create a PostgreSQL database and copy its connection URL. Apply migrations and seed once (PowerShell):
    ```powershell
    $env:DATABASE_URL = "<prod-url>"
    npm run db:deploy
    npm run db:seed
    Remove-Item Env:DATABASE_URL
    ```
-4. Deploy. The build runs `prisma generate && next build`.
+2. **API on Render:** New → Blueprint → select this repo (uses `render.yaml`). Set `DATABASE_URL` and `CLIENT_ORIGIN` (your Vercel URL). Health check: `/api/health`.
+3. **Website on Vercel:** import the repo with the **root directory left as the repository root** (`vercel.json` builds `client/dist`). Set `VITE_API_URL` to the Render URL, then deploy.
+4. Update `CLIENT_ORIGIN` on Render if the Vercel URL changes.
+
+Render's free plan sleeps when idle, so the first request after a while can take ~30 seconds.
 
 ## Known limitations
 
 - The payment gateway is simulated, and no confirmation emails or SMS are sent.
-- Rate limiting is in memory, per server instance. Use Redis/Upstash for multi-instance deployments.
-- There is no admin panel or authentication. Catalogue changes go through `src/data/catalog.ts` + `npm run db:seed`.
+- Rate limiting is in memory, per server instance. Use Redis for multi-instance deployments.
+- There is no admin panel or authentication. Catalogue changes go through `server/src/data/catalog.js` + `npm run db:seed`.
+- The website is a client-rendered SPA, so search engines see less content than with server rendering.
