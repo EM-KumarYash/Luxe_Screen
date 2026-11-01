@@ -94,15 +94,15 @@ Pick a simple folder **outside OneDrive** (OneDrive syncing can lock files and s
 ```powershell
 mkdir C:\Projects
 cd C:\Projects
-git clone https://github.com/<owner-username>/luxe-screens.git
-cd luxe-screens
+git clone https://github.com/EM-KumarYash/Luxe_Screen.git
+cd Luxe_Screen
 ```
 
-Replace `<owner-username>` with the GitHub username of the person who shared the project. If the repository is private, they must first add you as a collaborator, and Git will open a browser window asking you to sign in to GitHub.
+The repository is **private**, so the owner must first add your GitHub account as a collaborator (**Settings → Collaborators → Add people**) and you must accept the email invite. When you clone, Git opens a browser window asking you to sign in to GitHub.
 
-> Every command from now on must be run **inside the `luxe-screens` folder**. Your terminal prompt should end with `\luxe-screens>`.
+> Every command from now on must be run **inside the `Luxe_Screen` folder**. Your terminal prompt should end with `\Luxe_Screen>`.
 >
-> In VS Code you can also do **File → Open Folder → `C:\Projects\luxe-screens`**, then open a new terminal; it starts in the right folder.
+> In VS Code you can also do **File → Open Folder → `C:\Projects\Luxe_Screen`**, then open a new terminal; it starts in the right folder.
 
 ---
 
@@ -180,7 +180,7 @@ In pgAdmin, right-click **Databases → Refresh**. `luxe_screens` should be list
 ### Option B: Docker Desktop
 
 1. Open **Docker Desktop** and wait until the bottom-left shows **Engine running**.
-2. In the `luxe-screens` folder, run:
+2. In the `Luxe_Screen` folder, run:
 
    ```powershell
    docker compose up -d
@@ -210,7 +210,7 @@ docker compose ps     # STATUS should show "running" / "healthy"
 
 ## 7. Create the settings file (.env.local)
 
-The project needs to know how to connect to your database. In the `luxe-screens` folder, copy the example file:
+The project needs to know how to connect to your database. In the `Luxe_Screen` folder, copy the example file:
 
 ```powershell
 Copy-Item .env.example .env.local
@@ -240,10 +240,10 @@ postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE?schema=public
 | **Option A (installed PostgreSQL)** | Replace the **second** `postgres` (the password) with **your** PostgreSQL password |
 | **Option B (Docker)**               | Nothing. It already matches.                                                       |
 
-**Example:** if your PostgreSQL password is `root`:
+**Example:** if your PostgreSQL password is `mypassword`:
 
 ```env
-DATABASE_URL="postgresql://postgres:root@localhost:5432/luxe_screens?schema=public"
+DATABASE_URL="postgresql://postgres:mypassword@localhost:5432/luxe_screens?schema=public"
 ```
 
 Save the file (`Ctrl + S`) and close it.
@@ -343,7 +343,7 @@ Click a table such as `Booking`, `CartItem`, `WaitlistEntry` or `ContactMessage`
 After the first setup, you only need:
 
 ```powershell
-cd C:\Projects\luxe-screens
+cd C:\Projects\Luxe_Screen
 npm run dev
 ```
 
@@ -377,7 +377,7 @@ npm run dev
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `node` / `npm` / `git` _is not recognized_                                 | Not installed, or the terminal was open during install                   | Install it, then **close and reopen** VS Code / PowerShell                                                                                                              |
 | `running scripts is disabled on this system`                               | PowerShell execution policy                                              | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then reopen the terminal                                                                                     |
-| `DATABASE_URL is not set` / `Environment variable not found: DATABASE_URL` | `.env.local` missing, misnamed (`.env.local.txt`) or in the wrong folder | Redo [step 7](#7-create-the-settings-file-envlocal) inside the `luxe-screens` folder and check the file name                                                            |
+| `DATABASE_URL is not set` / `Environment variable not found: DATABASE_URL` | `.env.local` missing, misnamed (`.env.local.txt`) or in the wrong folder | Redo [step 7](#7-create-the-settings-file-envlocal) inside the `Luxe_Screen` folder and check the file name                                                             |
 | `password authentication failed for user "postgres"`                       | Wrong password in `.env.local`                                           | Fix the password in `DATABASE_URL` (see the special-characters note in step 7)                                                                                          |
 | `Can't reach database server at localhost:5432`                            | PostgreSQL isn't running                                                 | **Option A:** press `Win + R`, type `services.msc`, find **postgresql-x64-17**, right-click → **Start**. **Option B:** open Docker Desktop, then `docker compose up -d` |
 | `database "luxe_screens" does not exist`                                   | Database not created                                                     | Do [step 6](#6-create-the-database)                                                                                                                                     |

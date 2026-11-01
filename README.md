@@ -26,8 +26,8 @@ All commands below are for **Windows PowerShell** (the default terminal in VS Co
 **Prerequisites:** Windows 10/11, Node.js 20.19+, Git, and PostgreSQL 14+ (installed, or via Docker Desktop).
 
 ```powershell
-git clone <repo-url> luxe-screens
-cd luxe-screens
+git clone https://github.com/EM-KumarYash/Luxe_Screen.git
+cd Luxe_Screen
 npm install                  # also generates the Prisma client
 Copy-Item .env.example .env.local   # then edit DATABASE_URL if needed
 ```
