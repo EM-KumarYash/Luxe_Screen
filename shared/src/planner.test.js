@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { planExperience, type PlannerAddOn, type PlannerTheater } from "./planner";
+import { planExperience } from "./planner.js";
 
-const theaters: PlannerTheater[] = [
+const theaters = [
   {
     id: "small",
     name: "Small",
@@ -32,7 +32,7 @@ const theaters: PlannerTheater[] = [
   },
 ];
 
-const addOns: PlannerAddOn[] = [
+const addOns = [
   {
     id: "a1",
     slug: "romantic-hearts",

@@ -1,6 +1,4 @@
-import type { OccasionKey } from "./planner";
-
-export const OCCASION_LABELS: Record<OccasionKey, string> = {
+export const OCCASION_LABELS = {
   BIRTHDAY: "Birthday",
   ANNIVERSARY: "Anniversary",
   PROPOSAL: "Proposal",
@@ -12,19 +10,16 @@ export const OCCASION_LABELS: Record<OccasionKey, string> = {
   OTHER: "Other",
 };
 
-export const CATEGORY_LABELS = { CAKE: "Cakes", DECOR: "Decor", GIFT: "Gifts" } as const;
+export const CATEGORY_LABELS = { CAKE: "Cakes", DECOR: "Decor", GIFT: "Gifts" };
 
 export const PAYMENT_METHOD_LABELS = {
   UPI: "UPI",
   CARD: "Card",
   NET_BANKING: "Net Banking",
-} as const;
+};
 
 /** Which occasion-detail fields make sense for each occasion. */
-export const OCCASION_FIELDS: Record<
-  OccasionKey,
-  { honoree?: string; partner?: string; age?: boolean }
-> = {
+export const OCCASION_FIELDS = {
   BIRTHDAY: { honoree: "Birthday person's name", age: true },
   ANNIVERSARY: { honoree: "Partner 1 name", partner: "Partner 2 name" },
   PROPOSAL: { honoree: "Your name", partner: "Your partner's name" },

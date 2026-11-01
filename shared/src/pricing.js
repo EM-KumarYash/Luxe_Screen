@@ -1,55 +1,30 @@
 // Pure pricing rules shared by the API (authoritative) and the UI (preview).
 // All amounts are integer paise.
 
-export type PricedTheater = {
-  basePrice: number;
-  includedGuests: number;
-  extraGuestPrice: number;
-};
+/**
+ * @typedef {{ basePrice: number, includedGuests: number, extraGuestPrice: number }} PricedTheater
+ * @typedef {{ price: number, quantity: number }} PricedItem
+ * @typedef {{ theaterAmount: number, extraGuestAmount: number, addOnsAmount: number,
+ *   subtotal: number, discountAmount: number, total: number }} PriceBreakdown
+ */
 
-export type PricedItem = { price: number; quantity: number };
-
-export type CouponRule = {
-  code: string;
-  discountType: "PERCENT" | "FLAT";
-  discountValue: number;
-  minOrderAmount: number;
-  maxDiscount: number | null;
-  validFrom: Date;
-  validUntil: Date;
-  usageLimit: number | null;
-  usedCount: number;
-  isActive: boolean;
-};
-
-export type CouponRejection =
-  "INACTIVE" | "NOT_STARTED" | "EXPIRED" | "USAGE_LIMIT_REACHED" | "MIN_ORDER_NOT_MET";
-
-export type CouponResult =
-  { valid: true; discount: number } | { valid: false; reason: CouponRejection; message: string };
-
-export type PriceBreakdown = {
-  theaterAmount: number;
-  extraGuestAmount: number;
-  addOnsAmount: number;
-  subtotal: number;
-  discountAmount: number;
-  total: number;
-};
-
-export function extraGuestCharge(theater: PricedTheater, guests: number): number {
+/** Charge for guests above the theatre's included count. */
+export function extraGuestCharge(theater, guests) {
   return Math.max(0, guests - theater.includedGuests) * theater.extraGuestPrice;
 }
 
-export function addOnsTotal(items: PricedItem[]): number {
+export function addOnsTotal(items) {
   return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 }
 
-export function evaluateCoupon(
-  coupon: CouponRule,
-  subtotal: number,
-  now: Date = new Date(),
-): CouponResult {
+/**
+ * Checks a coupon against an order subtotal (paise).
+ * Coupon fields: discountType ("PERCENT" | "FLAT"), discountValue (percent, or paise for FLAT),
+ * minOrderAmount, maxDiscount (paise or null), validFrom, validUntil, usageLimit (or null),
+ * usedCount, isActive.
+ * @returns {{ valid: true, discount: number } | { valid: false, reason: string, message: string }}
+ */
+export function evaluateCoupon(coupon, subtotal, now = new Date()) {
   if (!coupon.isActive) {
     return { valid: false, reason: "INACTIVE", message: "This coupon is no longer active." };
   }
@@ -86,12 +61,11 @@ export function evaluateCoupon(
   return { valid: true, discount };
 }
 
-export function calculatePrice(input: {
-  theater: PricedTheater;
-  guests: number;
-  items: PricedItem[];
-  discountAmount?: number;
-}): PriceBreakdown {
+/**
+ * @param {{ theater: PricedTheater, guests: number, items: PricedItem[], discountAmount?: number }} input
+ * @returns {PriceBreakdown}
+ */
+export function calculatePrice(input) {
   const theaterAmount = input.theater.basePrice;
   const extraGuestAmount = extraGuestCharge(input.theater, input.guests);
   const addOnsAmount = addOnsTotal(input.items);

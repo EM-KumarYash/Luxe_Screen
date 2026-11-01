@@ -2,7 +2,7 @@
 // Given an occasion, budget and guest count it ranks theatres and assembles
 // an add-on package that fits the remaining budget. Pure function, no I/O.
 
-import { extraGuestCharge, type PricedTheater } from "./pricing";
+import { extraGuestCharge } from "./pricing.js";
 
 export const OCCASIONS = [
   "BIRTHDAY",
@@ -14,52 +14,9 @@ export const OCCASIONS = [
   "MOVIE_NIGHT",
   "CORPORATE",
   "OTHER",
-] as const;
-export type OccasionKey = (typeof OCCASIONS)[number];
+];
 
-export type PlannerTheater = PricedTheater & {
-  id: string;
-  name: string;
-  maxCapacity: number;
-  rating: number;
-};
-
-export type PlannerAddOn = {
-  id: string;
-  slug: string;
-  name: string;
-  category: "CAKE" | "DECOR" | "GIFT";
-  options: { id: string; name: string; price: number }[];
-};
-
-export type PlannedItem = {
-  addOnId: string;
-  addOnName: string;
-  category: PlannerAddOn["category"];
-  optionId: string;
-  optionName: string;
-  price: number;
-};
-
-export type PlannerOption<T extends PlannerTheater> = {
-  theater: T;
-  theaterCost: number;
-  items: PlannedItem[];
-  total: number;
-  withinBudget: boolean;
-  score: number;
-  reasons: string[];
-};
-
-type Profile = {
-  mood: "intimate" | "party" | "neutral";
-  /** Add-on slugs in order of preference per category. */
-  DECOR: string[];
-  CAKE: string[];
-  GIFT: string[];
-};
-
-const PROFILES: Record<OccasionKey, Profile> = {
+const PROFILES = {
   BIRTHDAY: {
     mood: "party",
     DECOR: ["balloon-bliss", "confetti-party"],
@@ -112,13 +69,10 @@ const PROFILES: Record<OccasionKey, Profile> = {
 };
 
 // Decor sets the scene, so it gets first claim on the remaining budget.
-const CATEGORY_PRIORITY = ["DECOR", "CAKE", "GIFT"] as const;
+const CATEGORY_PRIORITY = ["DECOR", "CAKE", "GIFT"];
 
-function scoreTheater(
-  theater: PlannerTheater,
-  input: { occasion: OccasionKey; guests: number; budget: number },
-): { score: number; cost: number; reasons: string[] } {
-  const reasons: string[] = [];
+function scoreTheater(theater, input) {
+  const reasons = [];
   const cost = theater.basePrice + extraGuestCharge(theater, input.guests);
   const profile = PROFILES[input.occasion];
   let score = 0;
@@ -153,18 +107,10 @@ function scoreTheater(
 // Two passes: first secure one item per category at its cheapest option (so a
 // lavish decor pick never crowds out the cake), then upgrade options in priority
 // order with whatever budget is left.
-function buildPackage(
-  occasion: OccasionKey,
-  addOns: PlannerAddOn[],
-  allowance: number,
-): PlannedItem[] {
+function buildPackage(occasion, addOns, allowance) {
   const profile = PROFILES[occasion];
   const bySlug = new Map(addOns.map((a) => [a.slug, a]));
-  const picks: {
-    addOn: PlannerAddOn;
-    category: PlannerAddOn["category"];
-    option: PlannerAddOn["options"][number];
-  }[] = [];
+  const picks = [];
   let remaining = allowance;
 
   for (const category of CATEGORY_PRIORITY) {
@@ -198,15 +144,17 @@ function buildPackage(
   }));
 }
 
-export function planExperience<T extends PlannerTheater>(input: {
-  occasion: OccasionKey;
-  /** Total budget in paise. */
-  budget: number;
-  guests: number;
-  theaters: T[];
-  addOns: PlannerAddOn[];
-  limit?: number;
-}): PlannerOption<T>[] {
+/**
+ * Ranks theatres for an occasion and builds an add-on package for each.
+ * @param {{ occasion: string, budget: number, guests: number,
+ *   theaters: Array<{ id: string, name: string, basePrice: number, includedGuests: number,
+ *     extraGuestPrice: number, maxCapacity: number, rating: number }>,
+ *   addOns: Array<{ id: string, slug: string, name: string, category: string,
+ *     options: Array<{ id: string, name: string, price: number }> }>,
+ *   limit?: number }} input  Budget and prices are in paise.
+ * @returns Top options, best first: { theater, theaterCost, items, total, withinBudget, score, reasons }
+ */
+export function planExperience(input) {
   const eligible = input.theaters.filter((t) => t.maxCapacity >= input.guests);
 
   return eligible

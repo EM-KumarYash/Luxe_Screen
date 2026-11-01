@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { calculatePrice, evaluateCoupon, type CouponRule } from "./pricing";
+import { calculatePrice, evaluateCoupon } from "./pricing.js";
 
 const theater = { basePrice: 249900, includedGuests: 4, extraGuestPrice: 35000 };
 
-const coupon = (overrides: Partial<CouponRule> = {}): CouponRule => ({
+const coupon = (overrides = {}) => ({
   code: "TEST",
   discountType: "PERCENT",
   discountValue: 10,
@@ -73,7 +73,7 @@ describe("evaluateCoupon", () => {
     ["EXPIRED", coupon({ validUntil: new Date("2026-10-01T00:00:00Z") }), 300000],
     ["USAGE_LIMIT_REACHED", coupon({ usageLimit: 5, usedCount: 5 }), 300000],
     ["MIN_ORDER_NOT_MET", coupon(), 100000],
-  ] as const)("rejects with %s", (reason, rule, subtotal) => {
+  ])("rejects with %s", (reason, rule, subtotal) => {
     const result = evaluateCoupon(rule, subtotal, now);
     expect(result.valid).toBe(false);
     if (!result.valid) expect(result.reason).toBe(reason);

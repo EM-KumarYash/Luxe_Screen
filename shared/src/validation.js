@@ -1,10 +1,10 @@
 // Zod schemas shared by API routes (authoritative) and client forms.
 import { z } from "zod";
 
-import { isValidDateOnly } from "./dates";
-import { OCCASIONS } from "./planner";
+import { isValidDateOnly } from "./dates.js";
+import { OCCASIONS } from "./planner.js";
 
-export const PAYMENT_METHODS = ["UPI", "CARD", "NET_BANKING"] as const;
+export const PAYMENT_METHODS = ["UPI", "CARD", "NET_BANKING"];
 
 const id = z.string().trim().min(1, "Required").max(64);
 const slug = z
@@ -36,7 +36,7 @@ export const phoneSchema = z
   .transform((v) => v.replace(/[\s-]/g, "").replace(/^(\+91|91|0)(?=\d{10}$)/, ""))
   .pipe(z.string().regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"));
 
-const optionalText = (max: number) =>
+const optionalText = (max) =>
   z
     .string()
     .trim()
@@ -147,10 +147,3 @@ export const contactSchema = z.object({
     .transform((v) => (v ? v : undefined)),
   message: z.string().trim().min(10, "Please write at least 10 characters").max(1000),
 });
-
-export type CreateBookingInput = z.infer<typeof createBookingSchema>;
-export type ConfirmBookingInput = z.infer<typeof confirmBookingSchema>;
-export type CouponValidateInput = z.infer<typeof couponValidateSchema>;
-export type PlannerInput = z.infer<typeof plannerSchema>;
-export type WaitlistInput = z.infer<typeof waitlistSchema>;
-export type ContactInput = z.infer<typeof contactSchema>;

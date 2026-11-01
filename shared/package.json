@@ -1,0 +1,21 @@
+{
+  "name": "@luxe/shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Business rules shared by the client and the server: pricing, coupons, IST dates, the experience planner and Zod validation schemas.",
+  "type": "module",
+  "exports": {
+    "./dates": "./src/dates.js",
+    "./money": "./src/money.js",
+    "./occasions": "./src/occasions.js",
+    "./planner": "./src/planner.js",
+    "./pricing": "./src/pricing.js",
+    "./validation": "./src/validation.js"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}

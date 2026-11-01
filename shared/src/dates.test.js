@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { addDays, isSlotClosed, isValidDateOnly, isWithinBookingWindow, todayInIST } from "./dates";
+import {
+  addDays,
+  isSlotClosed,
+  isValidDateOnly,
+  isWithinBookingWindow,
+  todayInIST,
+} from "./dates.js";
 
 describe("dates", () => {
   it("uses the IST calendar date, not UTC", () => {
