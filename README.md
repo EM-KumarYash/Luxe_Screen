@@ -181,6 +181,10 @@ The frontend and the API deploy separately; the database is a managed PostgreSQL
 
 Render's free plan sleeps when idle, so the first request after a while can take ~30 seconds.
 
+## Interview prep
+
+[`docs/interview-prep.html`](./docs/interview-prep.html) has 120 interview questions and answers about this project (architecture, React, Express, database, security, testing, deployment). Download or clone the repo and open the file in a browser; it has search and difficulty filters.
+
 ## Known limitations
 
 - The payment gateway is simulated, and no confirmation emails or SMS are sent.

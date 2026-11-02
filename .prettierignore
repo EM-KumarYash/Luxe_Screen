@@ -3,3 +3,4 @@ dist
 coverage
 server/prisma/migrations
 package-lock.json
+docs

@@ -1,0 +1,1399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luxe Screens Interview Prep</title>
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --surface-2: #f0eee7;
+    --text: #1d1b16;
+    --muted: #625d52;
+    --border: #e2ded3;
+    --accent: #9a6b12;
+    --accent-soft: #f6ecd6;
+    --code-bg: #f3f1ea;
+    --basic: #2f7d4f;
+    --basic-bg: #e3f3e8;
+    --mid: #8a5a00;
+    --mid-bg: #fbefd6;
+    --adv: #a33a3a;
+    --adv-bg: #f9e3e3;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f0f12; --surface: #17171c; --surface-2: #1f1f26; --text: #ece9e2; --muted: #a39f95;
+      --border: #2c2c35; --accent: #e0bb6e; --accent-soft: #2a2416; --code-bg: #121217;
+      --basic: #7fd3a0; --basic-bg: #16291e; --mid: #f0c674; --mid-bg: #2c2414; --adv: #f19a9a; --adv-bg: #2e1818;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f0f12; --surface: #17171c; --surface-2: #1f1f26; --text: #ece9e2; --muted: #a39f95;
+    --border: #2c2c35; --accent: #e0bb6e; --accent-soft: #2a2416; --code-bg: #121217;
+    --basic: #7fd3a0; --basic-bg: #16291e; --mid: #f0c674; --mid-bg: #2c2414; --adv: #f19a9a; --adv-bg: #2e1818;
+    --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: var(--accent); }
+  code, pre { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+  code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 5px; padding: 0 .3em; font-size: .88em; }
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-size: .84em; line-height: 1.5; }
+  pre code { background: none; border: 0; padding: 0; font-size: 1em; }
+
+  header.top {
+    position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
+  }
+  .top-inner { max-width: 1240px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .brand { font-weight: 700; font-size: 1.05rem; margin-right: auto; }
+  .brand span { color: var(--accent); }
+  .search { flex: 1 1 260px; max-width: 420px; position: relative; }
+  .search input {
+    width: 100%; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-size: .95rem;
+  }
+  .controls { display: flex; gap: 6px; flex-wrap: wrap; }
+  button.chip {
+    border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 999px;
+    padding: 6px 12px; font-size: .85rem; cursor: pointer;
+  }
+  button.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--text); font-weight: 600; }
+
+  .layout { max-width: 1240px; margin: 0 auto; padding: 24px 16px 80px; display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 32px; }
+  /* Grid children default to min-width:auto, which lets long code lines widen the page. */
+  .layout > * { min-width: 0; }
+  .qt { min-width: 0; overflow-wrap: anywhere; }
+  nav.toc { position: sticky; top: 76px; align-self: start; max-height: calc(100vh - 96px); overflow-y: auto; font-size: .9rem; }
+  nav.toc h2 { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  nav.toc ol { list-style: none; padding: 0; margin: 0; }
+  nav.toc li a { display: flex; justify-content: space-between; gap: 8px; padding: 5px 10px; border-radius: 8px; color: var(--text); text-decoration: none; }
+  nav.toc li a:hover { background: var(--surface-2); }
+  nav.toc li a .n { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .hero { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 28px; }
+  .hero h1 { margin: 0 0 6px; font-size: 1.7rem; line-height: 1.25; }
+  .hero p { margin: 6px 0; color: var(--muted); }
+  .stats { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .stat { background: var(--surface-2); border-radius: 10px; padding: 8px 12px; font-size: .88rem; }
+  .stat b { font-size: 1.05rem; }
+  .tips { margin-top: 14px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 8px; font-size: .93rem; }
+  .tips ul { margin: 6px 0 0; padding-left: 20px; }
+
+  section.cat { margin-bottom: 36px; }
+  section.cat > h2 { font-size: 1.3rem; margin: 0 0 4px; display: flex; align-items: baseline; gap: 10px; }
+  section.cat > h2 .count { font-size: .85rem; color: var(--muted); font-weight: 500; }
+  section.cat > p.intro { margin: 0 0 14px; color: var(--muted); font-size: .95rem; }
+
+  details.qa { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; box-shadow: var(--shadow); }
+  details.qa > summary {
+    list-style: none; cursor: pointer; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; font-weight: 600;
+  }
+  details.qa > summary::-webkit-details-marker { display: none; }
+  details.qa > summary .qn { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 2.4em; font-weight: 500; }
+  details.qa > summary .qt { flex: 1; }
+  details.qa > summary .chev { transition: transform .2s; color: var(--muted); }
+  details.qa[open] > summary .chev { transform: rotate(90deg); }
+  .lvl { font-size: .7rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; border-radius: 999px; padding: 2px 8px; white-space: nowrap; margin-top: 3px; }
+  .lvl.b { color: var(--basic); background: var(--basic-bg); }
+  .lvl.i { color: var(--mid); background: var(--mid-bg); }
+  .lvl.a { color: var(--adv); background: var(--adv-bg); }
+  .ans { padding: 0 16px 16px 56px; }
+  .ans p, .ans ul, .ans ol { margin: 8px 0; }
+  .ans ul, .ans ol { padding-left: 20px; }
+  .ans table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: 8px 0; display: block; overflow-x: auto; }
+  .ans th, .ans td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; vertical-align: top; }
+  .ans th { background: var(--surface-2); }
+  .say { margin-top: 10px; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); font-size: .92rem; }
+  .say::before { content: "💬 Say it like this: "; font-weight: 700; }
+  .file { font-size: .82rem; color: var(--muted); margin-top: 8px; }
+  .file::before { content: "📁 "; }
+  .hidden { display: none !important; }
+  #empty { display: none; text-align: center; color: var(--muted); padding: 40px 0; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { position: static; max-height: none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .ans { padding: 0 14px 14px 14px; }
+  }
+  @media print {
+    header.top, nav.toc, .controls { display: none; }
+    .layout { display: block; }
+    details.qa { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">Luxe Screens <span>Interview Prep</span></div>
+    <div class="search"><input id="q" type="search" placeholder="Search questions & answers… (e.g. prisma, 409, loader, cors)" aria-label="Search questions" /></div>
+    <div class="controls" role="group" aria-label="Filters">
+      <button class="chip" data-level="all" aria-pressed="true">All</button>
+      <button class="chip" data-level="b" aria-pressed="false">Basic</button>
+      <button class="chip" data-level="i" aria-pressed="false">Intermediate</button>
+      <button class="chip" data-level="a" aria-pressed="false">Advanced</button>
+      <button class="chip" id="expand">Expand all</button>
+      <button class="chip" id="collapse">Collapse all</button>
+      <button class="chip" id="theme" aria-label="Toggle theme">◐ Theme</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Sections"><h2>Sections</h2><ol id="toc"></ol></nav>
+
+  <main>
+    <div class="hero">
+      <h1>Interview questions &amp; answers: Luxe Screens</h1>
+      <p>A full-stack private-theatre booking app: a <b>React 19</b> (Vite, React Router 7, Tailwind v4) frontend and a <b>Node.js + Express</b> REST API with <b>PostgreSQL</b> and <b>Prisma 7</b>, all in plain JavaScript. Every answer below refers to <b>what is actually in this codebase</b>, so you can explain real decisions, not textbook ones.</p>
+      <div class="stats" id="stats"></div>
+      <div class="tips">
+        <b>How to use this page</b>
+        <ul>
+          <li>Start with <b>Section 1</b>: interviewers almost always open with "walk me through your project".</li>
+          <li>Use the <b>Basic</b> filter first, then Intermediate, then Advanced. Freshers are mostly asked Basic and Intermediate.</li>
+          <li>Each answer has a <b>💬 Say it like this</b> line: a short spoken version for the interview.</li>
+          <li>📁 shows the file to open if they ask you to show the code.</li>
+        </ul>
+      </div>
+    </div>
+
+<!-- ============================================================ 1 -->
+<section class="cat" id="s-overview" data-title="Project overview">
+<h2>1. Project overview &amp; your role</h2>
+<p class="intro">The opening questions. Practise these out loud until they're smooth.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Walk me through your project.</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p><b>Luxe Screens</b> is a booking website for private luxury theatres, used for birthdays, anniversaries, proposals and movie nights. A customer can:</p>
+<ol>
+<li>Browse theatres in a <b>gallery</b> (search, filter, sort, photo lightbox).</li>
+<li>Use the <b>AI Experience Planner</b>: enter occasion, budget and guests, and get a recommended theatre plus a cake/decor/gift package.</li>
+<li>Complete a <b>9-step booking</b>: date &amp; time → theatre → contact → occasion → cakes → decor → gifts → payment → receipt.</li>
+<li>Join a <b>waitlist</b> for upcoming cities.</li>
+</ol>
+<p>Technically it's three parts in one repository: a <b>React 19 single-page app</b> (Vite), a <b>Node.js + Express REST API</b>, and a <b>shared</b> package with the business rules both of them use. Data lives in <b>PostgreSQL</b>, accessed through <b>Prisma</b>. Everything is plain JavaScript.</p>
+<div class="say">"It's a full-stack booking platform for private theatres: a React 19 frontend talking to an Express REST API backed by PostgreSQL. Users browse rooms, get a recommendation for their occasion, and book in nine steps with add-ons, coupons and a simulated payment. I built the database schema, the API, the booking logic and the whole UI."</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is the tech stack and why did you choose it?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th>Layer</th><th>Tech</th><th>Why</th></tr>
+<tr><td>UI</td><td>React 19</td><td>Component model, hooks, huge ecosystem</td></tr>
+<tr><td>Build / dev server</td><td>Vite 8</td><td>Instant dev server with hot reload; fast, code-split production builds</td></tr>
+<tr><td>Routing</td><td>React Router 7 (data router)</td><td>URL-based pages, data <b>loaders</b>, error boundaries, lazy-loaded pages</td></tr>
+<tr><td>Styling</td><td>Tailwind CSS v4</td><td>Fast, consistent styling; design tokens defined once in CSS (<code>@theme</code>)</td></tr>
+<tr><td>Forms</td><td>React Hook Form + Zod</td><td>Fast forms; one schema validates in the browser <b>and</b> on the server</td></tr>
+<tr><td>Backend</td><td>Node.js + Express 5</td><td>Simple, widely used REST framework; Express 5 handles async errors</td></tr>
+<tr><td>Database</td><td>PostgreSQL</td><td>Relational data, transactions, unique constraints</td></tr>
+<tr><td>ORM</td><td>Prisma 7</td><td>Readable queries, migrations, safe parameterised SQL</td></tr>
+<tr><td>Testing</td><td>Vitest, Supertest, headless Chrome</td><td>Unit tests, API tests, full user journeys</td></tr>
+<tr><td>Deploy</td><td>Vercel (website) + Render (API) + Neon (Postgres)</td><td>Free tiers, each suited to its part</td></tr>
+</table>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Which part is frontend and which is backend?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th>Folder</th><th>Role</th></tr>
+<tr><td><code>client/</code></td><td><b>Frontend</b>: React pages (<code>src/pages</code>), components, router</td></tr>
+<tr><td><code>server/</code></td><td><b>Backend</b>: Express routes (<code>src/routes.js</code>), services, Prisma schema and migrations</td></tr>
+<tr><td><code>shared/</code></td><td><b>Shared</b>: pricing, coupons, IST dates, planner, Zod schemas, imported by both</td></tr>
+</table>
+<p>They are separate programs: the website runs on port <b>5173</b> and the API on port <b>4000</b>. <code>npm run dev</code> starts both.</p>
+<div class="say">"The frontend and backend are fully separate: <code>client</code> is a React SPA, <code>server</code> is an Express API, and <code>shared</code> holds the rules both need, so the UI and the API can never disagree on prices or validation."</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">The assignment PDF said Next.js. Why did you use React + Express?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p><b>Expect this question.</b> Reviewers will compare your repo with the PDF. The honest reason is that React + Express is the stack you're strongest in right now. Say that, but frame it as a <b>deliberate decision</b>, not an apology.</p>
+<table>
+<tr><th>❌ Don't say</th><th>✅ Say instead</th></tr>
+<tr><td>"I didn't know Next.js, so I changed it."</td><td>"I chose the stack where I can own and explain every line."</td></tr>
+<tr><td>"Next.js is bad" / "React + Express is better" (not true, and they'll push back)</td><td>"I kept every feature from the spec and I know the trade-offs."</td></tr>
+</table>
+<p><b>Main answer (about 30 seconds, learn it):</b></p>
+<div class="say">"The spec suggested Next.js. I actually started with it, and that version is in my git history. But React and Express are the stack I'm strongest in right now, and for an assignment I'd be evaluated on, I wanted to <b>own every line</b> and be able to explain and debug any part of it confidently. So I kept everything the spec asked for (all the features, the same four APIs, the same database schema) and built it as a React frontend with a separate Express REST API. I'm aware of the trade-offs: I lose server-side rendering, so SEO is weaker, and it's two deployments instead of one. Next.js is the next thing I'm learning properly, and since my business logic is separate from the framework, moving it back would mostly mean changing the routing and data-loading layer."</div>
+<p><b>Why this works:</b></p>
+<table>
+<tr><th>Line</th><th>What the interviewer hears</th></tr>
+<tr><td>"I started with it, it's in my git history"</td><td>You tried; you didn't avoid it</td></tr>
+<tr><td>"Own every line"</td><td>Responsibility and depth</td></tr>
+<tr><td>"Kept everything the spec asked for"</td><td>You take requirements seriously</td></tr>
+<tr><td>"Aware of the trade-offs"</td><td>Senior-level thinking</td></tr>
+<tr><td>"Next.js is the next thing I'm learning"</td><td>Willingness to learn</td></tr>
+</table>
+<p><b>Delivery tips:</b> say it with confidence (it was a decision, not a mistake), then steer straight to a strength: <i>"Let me show you how I prevented double booking…"</i></p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Follow-up: "So you don't know Next.js?"</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<div class="say">"I know the basics: the App Router, server and client components, and API routes. I used them in the first version of this project. But I'm not yet as confident there as I am with React and Express, which is why I chose them for something I'd be judged on. I'm actively learning it."</div>
+<p>Only say this after you've read the Next.js basics in the question below, so you can back it up if they ask one more question.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Follow-up: "If our team uses Next.js, would you follow it?"</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<div class="say">"Yes, definitely. In a team, consistency matters more than my personal preference. This was an individual assignment, so I optimised for code I could fully stand behind. On a team I'd follow the agreed stack and pick it up quickly, since Next.js is built on the React I already use."</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Follow-up: "Isn't ignoring the spec a red flag?"</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<div class="say">"That's fair. I didn't ignore the requirements: every feature and endpoint is there, and I documented the change in the README. In a real project I'd confirm a change like this with the team lead first. Here I made the call myself and was transparent about it."</div>
+<p>The last sentence matters most: it shows you know the <b>right process</b> (ask before changing an agreed stack), even though you made the call alone on an assignment.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Next.js basics you must be able to explain in 2 lines each</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Learn these so "you don't know Next.js?" never catches you out:</p>
+<table>
+<tr><th>Concept</th><th>2-line explanation</th></tr>
+<tr><td><b>File-based routing</b> (App Router)</td><td>Folders under <code>app/</code> become URLs: <code>app/gallery/page.jsx</code> → <code>/gallery</code>. <code>layout.jsx</code> wraps pages with shared UI like the header.</td></tr>
+<tr><td><b>Server vs Client Components</b></td><td>Components run on the server by default and can read the database directly, sending no JS to the browser. Add <code>"use client"</code> at the top for interactivity (state, onClick, effects).</td></tr>
+<tr><td><b>API routes</b> (Route Handlers)</td><td>A <code>route.js</code> file exporting <code>GET</code>/<code>POST</code> functions, e.g. <code>app/api/booking/route.js</code> → <code>/api/booking</code>. The same app serves pages and the API.</td></tr>
+<tr><td><b>Why people pick it</b></td><td>Server rendering for SEO and fast first load, plus frontend and backend in one deployment.</td></tr>
+</table>
+<p>Map it to what you built: <i>"In my React version, loaders replace server components for data, and Express routes replace route handlers."</i></p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What was the most challenging part?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Tell it as a story: <b>problem → why it's hard → what you did → result</b>.</p>
+<p><b>Preventing double booking.</b> Two customers can click "Pay" for the same theatre, slot and date at the same moment. A simple "check if free, then insert" has a race condition: both checks pass before either insert happens.</p>
+<p>I solved it at the <b>database level</b>. Each booking that holds a slot stores a key <code>theaterId:slotId:date</code> in a column with a <b>UNIQUE constraint</b>. The database rejects the second insert, and the API turns that error (Prisma code <code>P2002</code>) into a friendly <b>409 "slot just booked"</b>. Expired holds release the key by setting it to <code>NULL</code>; PostgreSQL allows many NULLs in a unique column.</p>
+<div class="say">"The trickiest part was double booking. Instead of check-then-insert, which races, I put a unique constraint on an active-slot key so the database guarantees only one live booking per slot, and the API returns a 409."</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What would you improve if you had more time?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Real payments</b> (Razorpay/Stripe) with server-verified <b>webhooks</b>.</li>
+<li><b>Authentication</b> ("my bookings") and an <b>admin panel</b> for theatres, slots and coupons.</li>
+<li><b>Email/SMS confirmations</b> through a background queue.</li>
+<li><b>Redis-based rate limiting</b>, since the current limiter is in memory per server.</li>
+<li>A <b>scheduled job</b> to expire stale holds (they expire lazily today).</li>
+<li><b>TypeScript</b> or at least <code>// @ts-check</code> with JSDoc, for compile-time safety as the code grows.</li>
+<li><b>SEO</b>: prerender the marketing pages, or add server rendering.</li>
+<li><b>CI</b> on GitHub Actions: lint, tests and build on every pull request.</li>
+</ul>
+<div class="say">Naming limitations yourself shows maturity. Interviewers like candidates who know what their project <i>doesn't</i> do.</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What was missing or unclear in the assignment spec, and how did you handle it?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>A <b>coupon API but no Coupon table</b>, so I added <code>Coupon</code>.</li>
+<li>A <b>waitlist page but no table</b>, so I added <code>WaitlistEntry</code> (unique per email + location).</li>
+<li><code>AddOn.options[]</code> had <b>no prices</b>, so <code>AddOnOption</code> became a table with its own price.</li>
+<li><code>Slot</code> had <b>no date</b>, so slots are daily time templates and availability is computed per date from bookings.</li>
+<li><code>location</code> was a plain string, so it became a <code>Location</code> table, which the waitlist also needs.</li>
+<li>The spec said <code>prisma db push</code>; I used <b>migrations</b> because they're versioned in git and safe for production.</li>
+</ul>
+</div></details>
+</section>
+
+<!-- ============================================================ 2 -->
+<section class="cat" id="s-arch" data-title="Architecture">
+<h2>2. Architecture: SPA + REST API</h2>
+<p class="intro">How the pieces fit together.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Draw the architecture of your app.</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>Browser
+  └─ React SPA (client, Vite)            http://localhost:5173
+        │  fetch("/api/...")  JSON
+        ▼
+   Express API (server)                  http://localhost:4000/api
+        │  Prisma (parameterised SQL)
+        ▼
+   PostgreSQL
+
+client and server both import shared/ (pricing, validation, dates, planner)</code></pre>
+<p>The browser downloads the React app once, then every page change happens in the browser. Data comes from the API as JSON.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Why separate the frontend and backend? What are the trade-offs?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th>Pros</th><th>Cons</th></tr>
+<tr><td>
+<ul>
+<li>Clear boundary: UI and API can be built, tested and deployed independently</li>
+<li>The REST API can serve other clients (a mobile app, partners)</li>
+<li>Each part scales on its own</li>
+<li>Simple mental model: React for UI, Express for HTTP</li>
+</ul>
+</td><td>
+<ul>
+<li>Two deployments and two URLs</li>
+<li>CORS must be configured</li>
+<li>No server rendering, so initial load and SEO are weaker</li>
+<li>Shared code needs a mechanism (I used npm workspaces)</li>
+</ul>
+</td></tr>
+</table>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What are npm workspaces, and why the <code>shared</code> package?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>npm workspaces let one repository hold several packages (<code>client</code>, <code>server</code>, <code>shared</code>) with <b>one</b> <code>npm install</code> at the root. npm links <code>shared</code> into <code>node_modules/@luxe/shared</code>, so both apps import it like a normal package:</p>
+<pre><code>import { calculatePrice } from "@luxe/shared/pricing";</code></pre>
+<p>That lets the UI preview the price and validate forms with <b>exactly</b> the rules the server enforces. Without it I'd have to copy the code and keep two versions in sync.</p>
+<div class="file">package.json (workspaces) · shared/package.json (exports)</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How does the frontend reach the API in development and in production?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Development:</b> the React code calls relative URLs like <code>/api/slots</code>. Vite's dev server <b>proxies</b> <code>/api</code> to <code>http://localhost:4000</code>. To the browser it's the same origin, so no CORS is involved.</li>
+<li><b>Production:</b> the website (Vercel) and API (Render) are on different domains. The client prefixes calls with <code>VITE_API_URL</code>, and the API allows that origin through <b>CORS</b> (<code>CLIENT_ORIGIN</code>).</li>
+</ul>
+<pre><code>// client/src/lib/api-client.js
+const API_BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+fetch(API_BASE + path, ...)</code></pre>
+<div class="file">client/vite.config.js · client/src/lib/api-client.js · server/src/app.js</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">CSR vs SSR: which does your app use, and what does it cost?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th></th><th>Client-side rendering (CSR)</th><th>Server-side rendering (SSR)</th></tr>
+<tr><td>HTML sent</td><td>Nearly empty <code>&lt;div id="root"&gt;</code>; JS builds the page</td><td>Full HTML for each page</td></tr>
+<tr><td>First load</td><td>Slower (download JS, then fetch data)</td><td>Faster first paint</td></tr>
+<tr><td>Navigation</td><td>Very fast after load</td><td>Network round-trips</td></tr>
+<tr><td>SEO</td><td>Weaker</td><td>Strong</td></tr>
+</table>
+<p>My app is <b>CSR</b> (a single-page app). To reduce the cost I <b>code-split</b> every page, set per-page <code>&lt;title&gt;</code>/<code>&lt;meta&gt;</code>, and show a loading state. If SEO mattered more, I'd prerender the marketing pages or use a server-rendering framework.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is Vite, and why use it?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Dev server:</b> serves your source files as native ES modules, so it starts instantly; <b>hot module replacement</b> updates the page without losing state.</li>
+<li><b>Production build:</b> bundles, minifies and splits code into chunks (<code>client/dist</code>).</li>
+<li><b>Proxy</b> for <code>/api</code> during development.</li>
+<li>Plugins: React (JSX) and Tailwind.</li>
+</ul>
+<p>Vite replaced Create React App, which is no longer maintained.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Trace one booking request end to end.</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ol>
+<li>User clicks <b>Pay</b>: <code>payment-step.jsx</code> calls <code>apiFetch("/api/booking", { method: "POST", json: payload })</code>.</li>
+<li>Vite proxy (dev) or <code>VITE_API_URL</code> (prod) sends it to Express.</li>
+<li>Express middleware: security headers → CORS → <code>express.json()</code> → rate limiter (10/min).</li>
+<li>The route validates the body with <code>createBookingSchema.parse()</code> (Zod) and calls <code>createBooking()</code>.</li>
+<li>The service checks the date window and slot, prices the cart from the database, then in a <b>transaction</b> releases lapsed holds and inserts the booking.</li>
+<li>Response <b>201</b> with the booking JSON; the UI then calls <code>/api/booking/confirm</code>.</li>
+<li>Any thrown error goes to <code>errorHandler</code> and comes back as <code>{ error: { code, message } }</code>.</li>
+</ol>
+<div class="file">client/src/components/booking/steps/payment-step.jsx · server/src/routes.js · server/src/services/bookings.js</div>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">You migrated from Next.js + TypeScript to React + Express in JavaScript. How did you do it safely?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<ol>
+<li><b>Kept the contracts:</b> same API paths, request/response shapes and error codes, so the UI logic barely changed.</li>
+<li><b>Stripped types automatically</b> with a tool (<code>ts-blank-space</code>) that removes TypeScript syntax but keeps comments and layout, then fixed what it couldn't handle by hand.</li>
+<li><b>Replaced Next-only features:</b> route handlers → Express routes; server components → React Router loaders; <code>next/link</code> → <code>Link</code>; <code>next/image</code> → a small <code>Photo</code> component.</li>
+<li><b>Re-ran every test:</b> 21 unit tests, new API tests, and the full browser journeys on desktop and mobile. That caught real issues, such as a leftover <code>fill</code> prop and a 404 route warning.</li>
+<li><b>Committed as moves</b> (<code>git mv</code>-style renames), so each file's history is preserved.</li>
+<li>Tested a <b>fresh clone</b> following the setup guide before pushing.</li>
+</ol>
+</div></details>
+</section>
+
+<!-- ============================================================ 3 -->
+<section class="cat" id="s-react" data-title="React & React Router">
+<h2>3. React &amp; React Router</h2>
+<p class="intro">Hooks, routing, data loading and forms.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How is routing set up?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>With React Router 7's <b>data router</b> (<code>createBrowserRouter</code>) in <code>client/src/router.jsx</code>:</p>
+<pre><code>{ element: &lt;RootLayout /&gt;, children: [{ errorElement: &lt;ErrorPage /&gt;, children: [
+  { index: true,                     lazy: () =&gt; import("@/pages/home-page") },
+  { path: "gallery",                 lazy: () =&gt; import("@/pages/gallery-page") },
+  { path: "booking",                 lazy: () =&gt; import("@/pages/booking-page") },
+  { path: "booking/confirmation/:id", lazy: () =&gt; import("@/pages/confirmation-page") },
+  { path: "*",                       element: &lt;NotFoundView /&gt; },
+]}]}</code></pre>
+<p>Each page file exports a <code>loader</code> and a <code>Component</code>. <code>lazy</code> loads a page's code only when the user visits it.</p>
+<div class="file">client/src/router.jsx · client/src/pages/</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What is a loader, and why use loaders instead of <code>useEffect</code> + fetch?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>A <b>loader</b> is a function React Router calls <b>before</b> rendering a route; the component reads the result with <code>useLoaderData()</code>.</p>
+<pre><code>export async function loader() {
+  const [{ theaters }, { locations }] = await Promise.all([
+    apiFetch("/api/theaters"), apiFetch("/api/locations"),
+  ]);
+  return { theaters, locations };
+}
+export function Component() {
+  const { theaters, locations } = useLoaderData();
+  ...
+}</code></pre>
+<p>Compared with fetching in <code>useEffect</code>:</p>
+<ul>
+<li>No "loading → data" flicker inside every page, and no loading/error state boilerplate.</li>
+<li>Data and page code load <b>in parallel</b> (with <code>lazy</code>).</li>
+<li>If a loader throws, the route's <code>errorElement</code> shows automatically.</li>
+<li>No race conditions when users click quickly between pages; the router cancels stale loads.</li>
+</ul>
+<div class="file">client/src/pages/home-page.jsx</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How do errors and 404s work in the React app?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>Unknown URLs match the <code>path: "*"</code> route, which renders <code>&lt;NotFoundView/&gt;</code>.</li>
+<li>If a loader fails (for example the API is down), the nearest <code>errorElement</code> (<code>ErrorPage</code>) renders <b>inside the layout</b>, so the header and footer stay. It offers "Try again", which calls <code>navigate(0)</code> to re-run the loader.</li>
+<li>For a missing booking, the confirmation loader converts the API's 404 into <code>throw data("Booking not found", { status: 404 })</code>; <code>ErrorPage</code> checks <code>isRouteErrorResponse(error) &amp;&amp; error.status === 404</code> and shows the 404 view.</li>
+</ul>
+<div class="file">client/src/pages/error-page.jsx · client/src/pages/confirmation-page.jsx</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How did you manage state in the 9-step booking wizard?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>One <b><code>useReducer</code></b> holds the whole booking: step, date, guests, theatre, slot, customer, occasion, cart, coupon, payment method and pending booking. Steps dispatch actions like <code>SELECT_THEATER</code> or <code>SET_CART_ITEM</code>.</p>
+<p><b>Why useReducer over many useStates?</b> The transitions are related: changing the date must clear the selected slot and theatre; lowering guests may clear a theatre that no longer fits. A reducer keeps those rules in one pure function:</p>
+<pre><code>case "SET_DATE":
+  return action.date === state.date ? state
+    : { ...state, date: action.date, startTime: null, theater: null, slot: null };</code></pre>
+<p>No Redux needed: the state belongs to one page.</p>
+<div class="file">client/src/components/booking/booking-state.js</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How does the wizard survive a page refresh?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>State is saved to <b><code>sessionStorage</code></b> in a <code>useEffect</code> on every change, and restored with <code>useReducer</code>'s <b>lazy initialiser</b>, so the very first render already shows the restored step (no flicker):</p>
+<pre><code>const [state, dispatch] = useReducer(wizardReducer, null, () =&gt; {
+  const fresh = createInitialState({ today, ...prefill });
+  return prefill.fromLink ? fresh : (loadStoredState(today) ?? fresh);
+});</code></pre>
+<p><code>sessionStorage</code> (not <code>localStorage</code>) because a half-finished booking belongs to that tab. Storage access is wrapped in <code>try/catch</code> because it can throw in private mode. A draft from a previous day resets its date and slot.</p>
+<div class="file">client/src/components/booking/booking-wizard.jsx</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why React Hook Form? Controlled vs uncontrolled inputs?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Controlled:</b> React state holds the value (<code>value + onChange</code>), so it re-renders on every keystroke.</li>
+<li><b>Uncontrolled:</b> the DOM holds the value; you read it when needed.</li>
+</ul>
+<p>React Hook Form uses <b>uncontrolled inputs</b>, so typing doesn't re-render the whole form. With <code>zodResolver</code>, the <b>same Zod schema</b> from <code>@luxe/shared</code> validates the form in the browser and the request on the server.</p>
+<pre><code>useForm({ resolver: zodResolver(customerSchema), defaultValues: state.customer })</code></pre>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Why <code>useWatch</code> instead of <code>watch()</code> in the occasion step?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>The React Hooks ESLint rules (which include React Compiler checks) flag <code>watch()</code> as incompatible: its return value can't be memoised safely. <code>useWatch({ control, name: "occasion" })</code> is a proper hook that subscribes to one field, so the component re-renders only when the occasion changes. I use it to show occasion-specific fields (age for birthdays, partner name for anniversaries).</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How does the slot-availability hook avoid race conditions?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>If the user changes the date quickly, an older request could finish <b>after</b> a newer one and show the wrong day's slots. <code>useAvailability</code> prevents it two ways:</p>
+<ol>
+<li>An <b><code>AbortController</code></b> cancels the previous request in the effect cleanup.</li>
+<li>Each result is stored with a <b>key</b> (<code>location|date</code>); the hook only returns data whose key matches the current inputs.</li>
+</ol>
+<div class="file">client/src/components/booking/use-availability.js</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What does <code>&lt;StrictMode&gt;</code> do? Why do effects run twice in development?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>In development, StrictMode deliberately <b>mounts, unmounts and re-mounts</b> components and runs effects twice, to expose missing cleanup (for example a timer or a fetch that isn't cancelled). That's why every effect in the app returns a cleanup: the slideshow clears its interval, the availability hook aborts its request, and keyboard listeners are removed. It has no effect in production.</p>
+<div class="file">client/src/main.jsx</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Which React 19 features did you use?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Document metadata:</b> rendering <code>&lt;title&gt;</code> and <code>&lt;meta&gt;</code> inside any component; React 19 moves them into <code>&lt;head&gt;</code>. My <code>PageMeta</code> component uses this, so no extra library (like react-helmet) is needed.</li>
+<li><b><code>fetchPriority</code></b> on images for the largest above-the-fold image.</li>
+<li>The new JSX transform (no <code>import React</code> needed).</li>
+</ul>
+<div class="file">client/src/components/layout/page-meta.jsx</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why are <code>key</code> props important in lists?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Keys tell React which item is which between renders, so it can reorder instead of re-creating elements and losing state. I use database ids (<code>key={theater.id}</code>), <b>not array indexes</b>, because the gallery re-sorts and filters. I also used <code>key={state.step}</code> on the wizard panel deliberately, to remount it and replay the fade-in animation on each step.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How is the gallery search, filter and sort built?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><code>useMemo</code> derives the results from theatres + filter state.</li>
+<li><code>useDeferredValue(query)</code> keeps typing smooth: filtering runs at lower priority.</li>
+<li>Sorting uses a lookup object of comparator functions.</li>
+<li>The result count is in an <code>aria-live</code> region for screen readers.</li>
+</ul>
+<p>With thousands of theatres I'd move filtering to the API with pagination and database indexes.</p>
+<div class="file">client/src/components/gallery/gallery-explorer.jsx</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How does the header highlight the current page?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>With React Router's <b><code>NavLink</code></b>, whose <code>className</code> can be a function receiving <code>{ isActive }</code>; it also sets <code>aria-current="page"</code> automatically. <code>end</code> on the Home link stops "/" matching every page. The mobile menu closes on navigation by comparing <code>useLocation().pathname</code> with the previous value during render.</p>
+<div class="file">client/src/components/layout/header.jsx</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How do deep links from the planner into the booking wizard work?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>/booking?location=hyderabad-jubilee-hills&amp;theater=velvet-room&amp;occasion=PROPOSAL&amp;guests=2&amp;options=id1,id2</code></pre>
+<p>The booking page <b>loader</b> reads <code>request.url</code>, loads the catalogue, and validates every parameter against it (unknown slugs and option ids are ignored; guests are limited to 1–20). It passes a <code>prefill</code> object to the wizard, which then removes the query from the address bar with <code>history.replaceState</code>, so a refresh restores saved progress instead. When the user picks a time, the recommended theatre is auto-selected if it's free.</p>
+<div class="say">"URL parameters are user input, so I validate them like any other input."</div>
+<div class="file">client/src/pages/booking-page.jsx</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How did you build the lightbox?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>With the native HTML <b><code>&lt;dialog&gt;</code></b> and <code>showModal()</code>. That gives a focus trap, the Esc key and an inert background <b>for free</b>. I added arrow-key navigation, thumbnails, click-outside to close, and body scroll locking.</p>
+<div class="file">client/src/components/gallery/lightbox.jsx</div>
+</div></details>
+</section>
+
+<!-- ============================================================ 4 -->
+<section class="cat" id="s-js" data-title="JavaScript">
+<h2>4. JavaScript</h2>
+<p class="intro">Language questions, answered with code from this project.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why plain JavaScript? How do you keep it safe without TypeScript?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Plain JS keeps the code simple to read and run with no compile step. To compensate for the missing type checks:</p>
+<ul>
+<li><b>Zod validates all data at the boundaries</b>: every API request body and query, and every form.</li>
+<li><b>JSDoc comments</b> document the shapes of important inputs (pricing, planner), and editors show them on hover.</li>
+<li><b>Tests</b> (28) cover the business rules and API validation.</li>
+<li><b>ESLint</b> catches unused variables, hook mistakes and undefined names.</li>
+</ul>
+<p>Honest trade-off: TypeScript would catch more mistakes at compile time, such as a misspelled property, especially as the team grows.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What are ES modules? Why do server imports end in <code>.js</code>?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>ES modules use <code>import</code>/<code>export</code> (instead of CommonJS <code>require</code>). Every package has <code>"type": "module"</code>. In Node.js, relative imports must include the file extension:</p>
+<pre><code>import { createApp } from "./app.js";   // Node needs ".js"</code></pre>
+<p>Vite (the frontend) resolves extensionless imports and the <code>@/</code> alias for you, so client code can write <code>import { cn } from "@/lib/utils"</code>.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is async/await? What does <code>Promise.all</code> do?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p><code>async/await</code> is syntax for working with Promises without nested callbacks. <code>Promise.all</code> runs independent tasks <b>in parallel</b>:</p>
+<pre><code>// home page loader: both requests happen at the same time
+const [{ theaters }, { locations }] = await Promise.all([
+  apiFetch("/api/theaters"), apiFetch("/api/locations"),
+]);</code></pre>
+<p>If any task rejects, <code>Promise.all</code> rejects. <code>Promise.allSettled</code> waits for all results regardless.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What do <code>?.</code> and <code>??</code> do?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Optional chaining <code>?.</code></b> stops and returns <code>undefined</code> if the left side is null/undefined: <code>error?.code</code>.</li>
+<li><b>Nullish coalescing <code>??</code></b> gives a default only for null/undefined (unlike <code>||</code>, which also replaces <code>0</code> and <code>""</code>):</li>
+</ul>
+<pre><code>const port = Number(process.env.PORT ?? 4000);
+return error?.code ?? "INTERNAL_ERROR";</code></pre>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Explain the custom error class <code>ApiError</code>.</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>export class ApiError extends Error {
+  constructor(status, code, message, details) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status; this.code = code; this.details = details;
+  }
+}
+throw new ApiError(409, "SLOT_UNAVAILABLE", "Sorry, this slot was just booked.");</code></pre>
+<p>Services throw it for <b>expected</b> failures; the error handler checks <code>error instanceof ApiError</code> and sends its status and code. Anything else is an unexpected bug: it's logged, and the client gets a generic 500 (no internal details leak).</p>
+<div class="file">server/src/lib/errors.js</div>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">Your <code>db.js</code> exports a <code>Proxy</code>. Why?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<p>I wanted services to write <code>prisma.booking.findMany()</code> as usual, but <b>without creating the database client at import time</b>. A <code>Proxy</code> intercepts property access and creates the real client on first use:</p>
+<pre><code>export const prisma = new Proxy({}, {
+  get(_target, property) {
+    const value = getClient()[property];          // created lazily, once
+    return typeof value === "function" ? value.bind(getClient()) : value;
+  },
+});</code></pre>
+<p>Benefit: the API tests import the whole app and test validation <b>with no database</b>, and a missing <code>DATABASE_URL</code> gives a clear message only when a query actually runs.</p>
+<div class="file">server/src/lib/db.js</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What is a closure? Where is one in your code?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>A function that remembers variables from the scope where it was created. The rate limiter middleware is one:</p>
+<pre><code>export function rateLimitMiddleware({ key, limit, windowMs }) {
+  return (req, res, next) =&gt; {          // remembers key, limit, windowMs
+    const result = rateLimit(`${key}:${req.ip}`, limit, windowMs);
+    ...
+  };
+}</code></pre>
+<p>Each route gets its own configured middleware from the same factory.</p>
+</div></details>
+</section>
+
+<!-- ============================================================ 5 -->
+<section class="cat" id="s-express" data-title="Node.js & Express">
+<h2>5. Node.js &amp; Express</h2>
+<p class="intro">The backend: middleware, routing and error handling.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is middleware in Express? List yours in order.</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Middleware is a function <code>(req, res, next)</code> that runs during a request; it can change the request/response, end the request, or call <code>next()</code>. Order matters. In <code>app.js</code>:</p>
+<ol>
+<li>Security headers (<code>nosniff</code>, <code>DENY</code> framing, referrer policy)</li>
+<li><code>cors()</code>: allows only the configured frontend origin</li>
+<li><code>express.json({ limit: "100kb" })</code>: parses JSON bodies</li>
+<li>Per-route: rate limiter, <code>Cache-Control</code> headers</li>
+<li>The <code>/api</code> router</li>
+<li><code>notFoundHandler</code> for unknown <code>/api</code> paths</li>
+<li><code>errorHandler</code> (last)</li>
+</ol>
+<div class="file">server/src/app.js</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How does error handling work in Express 5?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>An error-handling middleware has <b>four</b> parameters <code>(err, req, res, next)</code>; Express recognises it by that count, which is why <code>next</code> stays even though it's unused. In <b>Express 5</b>, if an <code>async</code> route throws or its promise rejects, Express forwards the error to this handler automatically. In Express 4 you needed a wrapper or <code>try/catch</code> + <code>next(err)</code> in every route.</p>
+<pre><code>if (error instanceof ApiError)   → its status + code
+if (error instanceof z.ZodError) → 400 VALIDATION_ERROR + field errors
+if (error.type === "entity.parse.failed") → 400 INVALID_JSON
+otherwise                        → log it, 500 INTERNAL_ERROR</code></pre>
+<div class="file">server/src/lib/errors.js</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt"><code>req.params</code> vs <code>req.query</code> vs <code>req.body</code>?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th></th><th>Example</th><th>In this project</th></tr>
+<tr><td><code>req.params</code></td><td><code>/api/booking/:id</code></td><td>booking id for the receipt</td></tr>
+<tr><td><code>req.query</code></td><td><code>?date=2026-11-20&amp;location=...</code></td><td>slot availability filters</td></tr>
+<tr><td><code>req.body</code></td><td>JSON in a POST</td><td>booking, coupon, planner, waitlist data</td></tr>
+</table>
+<p>All three are <b>user input</b>, so each is validated with Zod before use.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Why are route handlers so short? What's the service layer?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>api.post("/booking", perMinute("booking", 10), async (req, res) =&gt; {
+  const booking = await createBooking(createBookingSchema.parse(req.body));
+  res.status(201).json({ booking });
+});</code></pre>
+<p>Routes only handle <b>HTTP</b>: validate input, call a service, send a status. The <b>services</b> (<code>src/services/</code>) contain business logic and database access, with no <code>req</code>/<code>res</code>. That separation means the logic could be reused by a CLI, a job or a different framework, and is easier to test.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What does <code>app.set("trust proxy", 1)</code> do?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>On Render (or behind any load balancer), the request reaches Express from the proxy, not the user. With <code>trust proxy</code>, Express reads the real client IP from the <code>X-Forwarded-For</code> header into <code>req.ip</code>. Without it, every user would share the proxy's IP and the <b>rate limiter would block everyone together</b>.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How are environment variables loaded on the server?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p><code>server/prisma/load-env.js</code> uses <code>dotenv</code> to load <code>server/.env.local</code> then <code>server/.env</code>. Paths are resolved from the file itself (<code>import.meta.url</code>), so it works whether you run commands from the root or the server folder. It's imported first in <code>index.js</code> and in <code>prisma.config.js</code>, so the app and the Prisma CLI read the same settings.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What is graceful shutdown, and did you implement it?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>When the host stops the process (deploy, scale-down, Ctrl+C), it sends <code>SIGTERM</code>/<code>SIGINT</code>. Graceful shutdown stops accepting new requests, lets in-flight ones finish, and closes the database pool:</p>
+<pre><code>process.on(signal, () =&gt; {
+  server.close(async () =&gt; { await disconnect(); process.exit(0); });
+});</code></pre>
+<div class="file">server/src/index.js</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why separate <code>createApp()</code> from <code>listen()</code>?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p><code>app.js</code> builds and returns the Express app; <code>index.js</code> starts listening on a port. Tests import <code>createApp()</code> and send requests with <b>Supertest</b> directly, without opening a real port, so tests are fast and don't clash with a running server.</p>
+</div></details>
+</section>
+
+<!-- ============================================================ 6 -->
+<section class="cat" id="s-db" data-title="Database & Prisma">
+<h2>6. Database design &amp; Prisma</h2>
+<p class="intro">The most-asked backend area. Know your schema.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Explain your database schema.</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>Location 1──* Theater 1──* Slot
+                 │            │
+                 └──* Booking *┘──* CartItem *──1 AddOnOption *──1 AddOn
+                        │
+                        └──? Coupon
+Location 1──* WaitlistEntry        ContactMessage (standalone)</code></pre>
+<table>
+<tr><th>Table</th><th>Purpose</th></tr>
+<tr><td>Location</td><td>City/branch; <code>ACTIVE</code> or <code>COMING_SOON</code></td></tr>
+<tr><td>Theater</td><td>Room: price, included guests, extra-guest price, capacity, screen, sound, images</td></tr>
+<tr><td>Slot</td><td>Daily time window per theatre (Morning 10:00–13:00, …)</td></tr>
+<tr><td>AddOn / AddOnOption</td><td>Cake/decor/gift and its priced options</td></tr>
+<tr><td>Booking</td><td>Customer, date, guests, occasion, price breakdown, status, payment</td></tr>
+<tr><td>CartItem</td><td>Add-ons in a booking, with a snapshot of name and price</td></tr>
+<tr><td>Coupon</td><td>Percent/flat, minimum order, cap, validity, usage limit</td></tr>
+<tr><td>WaitlistEntry, ContactMessage</td><td>Leads</td></tr>
+</table>
+<div class="file">server/prisma/schema.prisma</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why store money as integers in paise?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Floating-point numbers can't represent many decimals exactly: <code>0.1 + 0.2 === 0.30000000000000004</code>. Storing <b>₹1,499 as 149900 paise</b> keeps all arithmetic exact. Formatting to rupees happens only for display (<code>formatINR</code>).</p>
+<div class="say">"Money is integer paise end to end, the same approach Stripe and Razorpay use."</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Why does CartItem store optionName and price when it links to AddOnOption?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>It's a <b>snapshot</b>. If the "1 kg" cake later changes from ₹1,149 to ₹1,299, an existing receipt must still show what the customer paid. The foreign key keeps the link for reporting; the copied columns keep history accurate.</p>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">How exactly does <code>activeSlotKey</code> prevent double booking?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>model Booking {
+  activeSlotKey String? @unique   // "theaterId:slotId:2026-11-20" while holding the slot
+  status        BookingStatus     // PENDING | CONFIRMED | CANCELLED | EXPIRED
+}</code></pre>
+<ul>
+<li>A <code>PENDING</code> or <code>CONFIRMED</code> booking holds the key.</li>
+<li>Expired or cancelled bookings set it to <code>NULL</code>; PostgreSQL allows many NULLs in a unique column.</li>
+<li>Two concurrent inserts with the same key: one wins, the other gets a unique violation (<code>P2002</code>) → <b>409</b>.</li>
+</ul>
+<p><b>Why not a unique index on (theaterId, slotId, date)?</b> Then a cancelled booking would block the slot forever. A <b>partial unique index</b> (<code>WHERE status IN (...)</code>) would also work, but Prisma's schema can't express it. The nullable key gives the same guarantee natively.</p>
+<div class="file">server/prisma/schema.prisma · server/src/services/bookings.js</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What indexes did you add, and why?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th>Index</th><th>Speeds up</th></tr>
+<tr><td><code>Booking (theaterId, date)</code></td><td>Availability lookups</td></tr>
+<tr><td><code>Booking (status, holdExpiresAt)</code></td><td>Finding expired holds</td></tr>
+<tr><td><code>Booking (email)</code></td><td>Customer lookups</td></tr>
+<tr><td><code>Theater (locationId)</code>, <code>CartItem (bookingId)</code></td><td>Joins (Postgres doesn't index foreign keys automatically)</td></tr>
+<tr><td>Unique: slug, code, reference, (theaterId, startTime), (email, locationId)</td><td>Lookups <b>and</b> data integrity</td></tr>
+</table>
+<p>Trade-off: indexes speed up reads but slow writes slightly and use disk space.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt"><code>prisma migrate</code> vs <code>prisma db push</code>?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th></th><th><code>db push</code></th><th><code>migrate</code></th></tr>
+<tr><td>History</td><td>None</td><td>SQL files in <code>server/prisma/migrations/</code>, in git</td></tr>
+<tr><td>Use for</td><td>Prototyping</td><td>Teams and production</td></tr>
+<tr><td>Safety</td><td>May drop data to sync</td><td>Reviewable and repeatable</td></tr>
+</table>
+<p><code>npm run db:migrate</code> creates migrations while developing; <code>npm run db:deploy</code> applies them on a new machine or in production.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Which Prisma client generator did you use, and why?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>Prisma 7's new <code>prisma-client</code> generator outputs <b>TypeScript files</b>, which a plain-JavaScript Node server can't import directly. So I used the <code>prisma-client-js</code> generator, which outputs JavaScript into <code>node_modules/@prisma/client</code>, together with the <code>@prisma/adapter-pg</code> driver adapter (Prisma 7 requires an adapter). I tested this combination in a throwaway project before switching. <code>npm install</code> runs <code>prisma generate</code> automatically.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What does the seed script do? What does idempotent mean?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>It loads sample data: 5 locations, 6 theatres, 24 slots, 12 add-ons (23 options) and 4 coupons. <b>Idempotent</b> means running it twice gives the same result as once: it uses <code>upsert</code> keyed on natural keys (slug, code), so re-running updates rows instead of duplicating them.</p>
+<div class="file">server/prisma/seed.js · server/src/data/catalog.js</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What is a transaction, and where do you use one?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>A group of queries that <b>all succeed or all roll back</b>.</p>
+<ul>
+<li><b>Create booking:</b> release lapsed holds on the slot key, then insert the booking.</li>
+<li><b>Confirm payment:</b> mark the booking PAID and increment the coupon usage. If the coupon is exhausted, throw, and the booking update rolls back too.</li>
+</ul>
+<pre><code>await prisma.$transaction(async (tx) =&gt; {
+  await tx.booking.updateMany({ where: { activeSlotKey: key, status: "PENDING", ... },
+                                data: { status: "EXPIRED", activeSlotKey: null } });
+  return tx.booking.create({ data: { ... } });
+});</code></pre>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What is the N+1 query problem? Does your code have it?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>N+1 is loading a list (1 query) and then querying once per item (N queries). Availability avoids it: <b>one</b> query loads all theatres with their slots, <b>one</b> query loads all taken bookings for that date, and membership is checked in memory with a <code>Set</code>. Two queries, however many theatres there are.</p>
+<div class="file">server/src/services/availability.js</div>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">How do you handle dates and timezones? What bug did you hit?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>The booking date is a calendar date (<code>@db.Date</code>), always an IST day.</li>
+<li>"Today" is computed in IST (UTC+5:30): at 20:00 UTC on 31 Oct it's already 1 Nov in India, and a unit test checks that.</li>
+<li>Slot start times use an explicit offset: <code>new Date(`${date}T${time}:00+05:30`)</code>.</li>
+</ul>
+<p><b>The bug:</b> in a manual test I expired a hold with SQL <code>now() - interval '1 minute'</code>. Prisma stores timestamps in <b>UTC</b> but my Postgres session was IST, so the value landed 5.5 hours in the future. Fixed with <code>now() AT TIME ZONE 'utc'</code>. Lesson: store UTC, convert only at the edges.</p>
+<div class="file">shared/src/dates.js · shared/src/dates.test.js</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How is SQL injection prevented?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>Prisma always sends <b>parameterised queries</b>: values travel separately from SQL text. The one raw query uses a <b>tagged template</b>, which is also parameterised:</p>
+<pre><code>await tx.$executeRaw`
+  UPDATE "Coupon" SET "usedCount" = "usedCount" + 1
+  WHERE "id" = ${booking.couponId}
+    AND ("usageLimit" IS NULL OR "usedCount" &lt; "usageLimit")`;</code></pre>
+<p>Never build SQL with string concatenation or use <code>$executeRawUnsafe</code> with user input.</p>
+</div></details>
+</section>
+
+<!-- ============================================================ 7 -->
+<section class="cat" id="s-api" data-title="API design">
+<h2>7. API design</h2>
+<p class="intro">REST, status codes, validation and the booking lifecycle.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">List your API endpoints.</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th>Method &amp; path</th><th>Purpose</th></tr>
+<tr><td>GET /api/slots?date=&amp;location=</td><td>Live availability per theatre and slot</td></tr>
+<tr><td>POST /api/coupons/validate</td><td>Validate a coupon against a server-priced cart</td></tr>
+<tr><td>POST /api/booking</td><td>Create a PENDING booking (10-minute hold) → 201</td></tr>
+<tr><td>POST /api/booking/confirm</td><td>Simulated payment → CONFIRMED/PAID</td></tr>
+<tr><td>GET /api/booking/:id</td><td>Receipt</td></tr>
+<tr><td>POST /api/planner</td><td>AI recommendation</td></tr>
+<tr><td>POST /api/waitlist, POST /api/contact</td><td>Leads</td></tr>
+<tr><td>GET /api/locations, /theaters, /theaters/:slug, /addons, /health</td><td>Catalogue and health check</td></tr>
+</table>
+<p>The first four are the ones the assignment required.</p>
+<div class="file">server/src/routes.js</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Which HTTP status codes do you return, and why?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th>Code</th><th>When</th></tr>
+<tr><td>200 / 201</td><td>OK / created (booking, waitlist entry)</td></tr>
+<tr><td>400</td><td>Invalid input (Zod failed) or malformed JSON</td></tr>
+<tr><td>402</td><td>Payment declined (simulated failure)</td></tr>
+<tr><td>404</td><td>Booking, theatre, slot or route not found</td></tr>
+<tr><td>409</td><td>Conflict: slot just booked, already on waitlist</td></tr>
+<tr><td>410</td><td>Gone: the slot hold expired</td></tr>
+<tr><td>422</td><td>Valid input that breaks a business rule (too many guests, date out of range, coupon not applicable)</td></tr>
+<tr><td>429</td><td>Rate limited (with <code>Retry-After</code>)</td></tr>
+<tr><td>500</td><td>Unexpected error (logged; generic message)</td></tr>
+</table>
+<div class="say">"400 means 'I can't understand your request'; 422 means 'I understand it, but the rules don't allow it'."</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What does an error response look like?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>{ "error": { "code": "SLOT_UNAVAILABLE", "message": "Sorry, this slot was just booked. Please pick another time." } }
+
+{ "error": { "code": "VALIDATION_ERROR", "message": "Some fields are invalid.",
+             "details": { "fieldErrors": { "customer": ["Enter a valid 10-digit Indian mobile number"] } } } }</code></pre>
+<p>A machine-readable <code>code</code> for the frontend to branch on, a human <code>message</code>, and optional <code>details</code>. One <code>errorHandler</code> produces every error, so the shape never varies. The client's <code>ApiClientError</code> exposes <code>status</code>, <code>code</code> and <code>fieldErrors</code>.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why validate on the server if the form already validates?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Client validation is for <b>user experience</b>; server validation is for <b>security</b>. Anyone can bypass the browser with Postman or curl. Every body and query is validated with Zod in the route before touching the database, using the same schema as the form.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why recalculate the price on the server?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p><b>Never trust prices from the client.</b> A user could edit the request to send <code>total: 1</code>. The booking API only accepts <b>ids and quantities</b>; it loads current prices from the database and computes the total itself.</p>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">What is idempotency? Is your confirm endpoint idempotent?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<p><b>Idempotent</b> means calling it many times has the same effect as once, which matters for payments because networks retry and users double-click.</p>
+<ul>
+<li>If the booking is already <code>CONFIRMED</code>, confirm returns it <b>unchanged</b>.</li>
+<li>Two simultaneous confirms: a <b>conditional update</b> (<code>updateMany WHERE id = ? AND status = 'PENDING'</code>) lets only one win, so the coupon is counted once.</li>
+</ul>
+<p>With a real gateway I'd also store the gateway payment id with a unique constraint and accept an <code>Idempotency-Key</code> header.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Walk me through the booking lifecycle.</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>POST /api/booking ──► PENDING (holds slot, holdExpiresAt = now + 10 min)
+                          │
+      ┌───────────────────┼─────────────────────────────┐
+      │ confirm FAILURE   │ confirm SUCCESS              │ 10 min pass
+      ▼                   ▼                              ▼
+ PENDING + payment     CONFIRMED + PAID               EXPIRED (slot key → NULL)
+ FAILED (retry OK)     (coupon redeemed)               confirm → 410 HOLD_EXPIRED</code></pre>
+<p>Expiry is <b>lazy</b>: availability treats elapsed holds as free, the receipt reports them as EXPIRED, and the next booking on that slot releases them inside its transaction.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How are coupons validated?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p><code>evaluateCoupon()</code> in <code>shared/src/pricing.js</code> checks, in order: active → started → not expired → usage limit → minimum order. Then:</p>
+<ul>
+<li>PERCENT: <code>subtotal × % / 100</code>, capped at <code>maxDiscount</code>;</li>
+<li>FLAT: fixed amount;</li>
+<li>rounded <b>down</b> to whole rupees, never more than the subtotal.</li>
+</ul>
+<p>Example: LUXE10 on ₹6,696 → ₹669.60 → capped at ₹500. Usage is only counted on <b>confirmed payment</b>, atomically.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How does rate limiting work, and what are its limits?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>A <b>fixed-window, in-memory</b> counter per <code>route + client IP</code>, as Express middleware. Limits per minute: booking 10, coupon 20, confirm 20, planner 30, waitlist 5, contact 5. Over the limit → 429 with <code>Retry-After</code>. An API test checks the sixth waitlist request gets 429.</p>
+<p><b>Limitation:</b> counters live in one process's memory. With several server instances, each counts separately; production should use Redis.</p>
+<div class="file">server/src/lib/rate-limit.js · server/src/app.test.js</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What's the booking reference format, and why not show the database id?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>References look like <code>LXS-H28S5FFE</code>: 8 characters from an alphabet without 0/O and 1/I, so they're easy to read over the phone, generated with <code>crypto.randomInt</code>. The internal id is a long, unguessable <b>cuid</b>, used in the receipt URL so people can't guess other bookings' links.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why do some GET endpoints send <code>Cache-Control</code> headers?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>Catalogue endpoints (theatres, locations, add-ons) send <code>public, max-age=300</code>: they rarely change, so browsers and CDNs can reuse them for 5 minutes.</li>
+<li><code>/api/slots</code> and receipts send <code>no-store</code>: stale availability would cause failed bookings.</li>
+</ul>
+</div></details>
+</section>
+
+<!-- ============================================================ 8 -->
+<section class="cat" id="s-planner" data-title="AI planner">
+<h2>8. AI Experience Planner</h2>
+<p class="intro">Expect "is it really AI?". Answer confidently and honestly.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Is the AI planner real AI?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p><b>Be honest: no.</b> It's a <b>deterministic, rules-based recommendation engine</b>, and the README says so. Chosen on purpose: no API key or cost, same input → same output (unit-testable), and it explains itself with reasons like "Cosy, intimate room suited to the occasion".</p>
+<div class="say">"It's a scoring engine, not an LLM. For a booking flow I wanted predictable, testable, free recommendations. An LLM could add natural-language input later, with this engine as the fallback."</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How does the scoring algorithm work?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ol>
+<li><b>Filter</b> out theatres that can't fit the group.</li>
+<li><b>Score</b> each theatre:
+<ul>
+<li>Capacity fit: up to 40 points, best when the room is ~75% full.</li>
+<li>Occasion mood: intimate occasions get +20 for rooms of 6 or fewer; party occasions +12 for rooms of 8 or more.</li>
+<li>Budget fit: up to 25 points when the theatre uses ~65% of the budget; −50 if over budget.</li>
+<li>Rating bonus.</li>
+</ul></li>
+<li><b>Build a package</b> from occasion-specific preferences.</li>
+<li>Return the top recommendation plus 2 alternatives.</li>
+</ol>
+<p>It lives in <code>shared/</code>, but only the server runs it (<code>POST /api/planner</code>), with the real catalogue.</p>
+<div class="file">shared/src/planner.js · server/src/services/planner.js</div>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">A unit test caught a bug in your planner. What was it?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<p>My first package builder was <b>greedy</b>: per category it took the most expensive option that fit. With ₹5,000 for a proposal it chose Premium decor and a cake and had nothing left for a gift. The test expected DECOR + CAKE + GIFT and failed.</p>
+<p><b>Fix: two passes.</b> First secure one item per category at its <b>cheapest</b> option, then upgrade in priority order with the money left.</p>
+<div class="say">"Greedy algorithms can be locally optimal but globally bad. The test caught it before any user did."</div>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">How would you add a real LLM?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>Let users type freely ("surprise 30th birthday for my wife, around ₹8k").</li>
+<li>Call an LLM with <b>tool calling</b>, where the tool is the existing <code>planExperience()</code> over the real catalogue, so it can't invent theatres or prices.</li>
+<li>Validate its output with Zod; on failure or timeout, <b>fall back</b> to the rules engine.</li>
+<li>Keep the API key on the server, rate-limit and cache.</li>
+</ul>
+</div></details>
+</section>
+
+<!-- ============================================================ 9 -->
+<section class="cat" id="s-sec" data-title="Security">
+<h2>9. Security</h2>
+<p class="intro">What you protected, and what's still missing.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How do you protect secrets like the database password?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>Secrets live in <code>server/.env</code>, which is <b>git-ignored</b>. Only <code>.env.example</code> files with dummy values are committed.</li>
+<li>The database password exists <b>only on the server</b>. The browser never talks to the database.</li>
+<li>In production, secrets go in the hosting dashboards (Render, Vercel).</li>
+<li>Before pushing I checked tracked files for secrets and replaced a real local password used as a doc example.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Are <code>VITE_</code> environment variables secret?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p><b>No.</b> Vite <b>copies</b> every <code>VITE_*</code> variable into the JavaScript bundle at build time, so anyone can read them in the browser. That's why the client has only <code>VITE_API_URL</code> (a public URL). Secrets must never be put in client env variables; they belong on the server.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What is CORS, and how did you configure it?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>Browsers block a page from reading responses from a <b>different origin</b> (domain/port) unless the server allows it with <code>Access-Control-Allow-Origin</code>. In production the website (Vercel) and API (Render) are different origins, so the API uses the <code>cors</code> middleware with an <b>allow-list</b> from <code>CLIENT_ORIGIN</code>:</p>
+<pre><code>const allowed = (clientOrigin ?? "http://localhost:5173").split(",").map((o) =&gt; o.trim());
+app.use(cors({ origin: allowed }));</code></pre>
+<p>An API test confirms the configured origin is allowed and a random one isn't. Note: CORS protects <b>browsers</b>; it doesn't stop curl or Postman, which is why validation and rate limiting still matter.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How are XSS and SQL injection prevented?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>XSS:</b> React <b>escapes</b> everything rendered with <code>{value}</code>, so a name like <code>&lt;script&gt;</code> shows as text. I never use <code>dangerouslySetInnerHTML</code>.</li>
+<li><b>SQL injection:</b> Prisma uses parameterised queries, including the one tagged-template raw query.</li>
+<li>Zod also limits input lengths, and <code>express.json</code> limits bodies to 100 KB.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What security headers did you add?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th>Header</th><th>Protects against</th></tr>
+<tr><td><code>X-Content-Type-Options: nosniff</code></td><td>MIME-type sniffing</td></tr>
+<tr><td><code>X-Frame-Options: DENY</code></td><td>Clickjacking (being embedded in an iframe)</td></tr>
+<tr><td><code>Referrer-Policy: strict-origin-when-cross-origin</code></td><td>Leaking full URLs to other sites</td></tr>
+</table>
+<p>Set by Express on the API and by <code>vercel.json</code> on the website. I also disabled <code>X-Powered-By</code> so the API doesn't advertise Express. Next step: a Content-Security-Policy (or the <code>helmet</code> package).</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Can someone see another person's booking?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>The receipt URL uses an unguessable cuid, so you'd need the exact link, but anyone <b>with</b> the link can view it. That's acceptable for a demo receipt. In production I'd add authentication (or require the booking email/phone) and check ownership on the server. Accessing other users' records by id is called <b>IDOR</b>.</p>
+</div></details>
+</section>
+
+<!-- ============================================================ 10 -->
+<section class="cat" id="s-perf" data-title="Performance, SEO & a11y">
+<h2>10. Performance, SEO &amp; accessibility</h2>
+<p class="intro">"No console errors" and "responsive" were explicit requirements.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is code splitting, and did you use it?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Splitting the JavaScript into chunks so users download only what the current page needs. Every route uses <code>lazy: () =&gt; import("@/pages/...")</code>, so Vite builds a separate file per page. For example, the booking wizard (~40 KB) only loads when someone opens <code>/booking</code>, not on the home page.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How did you optimise images without Next.js?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>A small <code>Photo</code> component:</p>
+<ul>
+<li>requests the <b>right width</b> from Unsplash (a 160 px thumbnail, an 800 px card, 1600 px only for the hero and lightbox) by rewriting the <code>w=</code> parameter;</li>
+<li><code>loading="lazy"</code> and <code>decoding="async"</code> by default;</li>
+<li><code>eager</code> + <code>fetchPriority="high"</code> for above-the-fold images (better LCP);</li>
+<li>fixed <code>aspect-ratio</code> containers, so there's <b>no layout shift</b>.</li>
+</ul>
+<div class="file">client/src/components/ui/photo.jsx</div>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What are Core Web Vitals?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>LCP</b> (Largest Contentful Paint): how fast the main content appears. Helped by eager-loading the hero/first cards and preconnecting to the image host.</li>
+<li><b>CLS</b> (Cumulative Layout Shift): content jumping around. Prevented with fixed-size image boxes.</li>
+<li><b>INP</b> (Interaction to Next Paint): responsiveness. Helped by <code>useDeferredValue</code> in search and uncontrolled forms.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What did you do for SEO in a single-page app?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>Real default <code>&lt;title&gt;</code> and description in <code>index.html</code>.</li>
+<li>Per-page titles and descriptions via React 19 metadata (<code>PageMeta</code>).</li>
+<li><code>noindex</code> on receipts and error pages; <code>robots.txt</code> disallows receipts.</li>
+<li>Semantic HTML: one <code>h1</code> per page, <code>nav</code>, <code>main</code>.</li>
+</ul>
+<p><b>Limitation:</b> the initial HTML has no page content, which is weaker for SEO and link previews. The fix would be prerendering the public pages or server rendering.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What accessibility work did you do?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>Every input has a <code>&lt;label&gt;</code>; errors use <code>aria-describedby</code> and <code>role="alert"</code>.</li>
+<li>Choice "cards" are real radio inputs, so the keyboard works.</li>
+<li>On each wizard step, <b>focus moves to the step heading</b>.</li>
+<li>Skip-to-content link, visible focus outlines, <code>aria-current</code> on the active link.</li>
+<li><code>scroll-padding-top</code>, so focused fields aren't hidden under the sticky header (found by a browser test).</li>
+<li>Animations respect <code>prefers-reduced-motion</code>.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How did you make it responsive, and how did you check "no console errors"?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Mobile-first Tailwind classes (<code>sm:</code>, <code>md:</code>, <code>lg:</code>): the gallery grid goes 1 → 2 → 3 columns, the header becomes a hamburger menu, the wizard's summary moves below the form, and the stepper becomes "Step 3 of 9".</p>
+<p>A headless-Chrome script opened every page at <b>1440, 820 and 390 px</b> and failed on any console error/warning, failed request or sideways scroll. It found, for example, a leftover <code>fill</code> attribute on thumbnails and a router warning on the 404 route; both were fixed.</p>
+<p>Note: when the API <i>intentionally</i> returns 4xx (wrong coupon, test-declined payment), Chrome logs "Failed to load resource". That's normal browser behaviour on error paths.</p>
+</div></details>
+</section>
+
+<!-- ============================================================ 11 -->
+<section class="cat" id="s-test" data-title="Testing">
+<h2>11. Testing</h2>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What did you test, and how?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th>Level</th><th>Tool</th><th>What</th></tr>
+<tr><td>Unit (21)</td><td>Vitest</td><td>Pricing, extra guests, each coupon rule, IST dates, planner</td></tr>
+<tr><td>API (7)</td><td>Vitest + Supertest</td><td>404 route, invalid JSON, field errors, query validation, security headers, CORS allow-list, rate limit 429</td></tr>
+<tr><td>Manual API</td><td>curl</td><td>Double booking 409, expired coupon 422, hold expiry 410, idempotent confirm</td></tr>
+<tr><td>End-to-end</td><td>puppeteer-core + Chrome</td><td>Full booking (declined payment + retry, refresh mid-flow), planner deep link, gallery, forms, on desktop and mobile, against the production build</td></tr>
+<tr><td>Setup</td><td>Fresh <code>git clone</code></td><td>Followed the setup guide from scratch before pushing</td></tr>
+</table>
+<p>Run them all with <code>npm test</code> (28 tests).</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How do the API tests run without a database?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>They test requests that are <b>rejected before any query</b>: bad JSON, invalid fields, unknown routes, CORS, rate limits. Supertest calls <code>createApp()</code> directly, and the lazy Prisma proxy means importing the app doesn't connect to a database.</p>
+<pre><code>const res = await request(app).post("/api/booking").send({ guests: 0 });
+expect(res.status).toBe(400);
+expect(res.body.error.code).toBe("VALIDATION_ERROR");</code></pre>
+<div class="file">server/src/app.test.js</div>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Why are the business rules easy to unit test?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>They're <b>pure functions</b> in <code>shared/</code>: no database, HTTP or React. Time is a parameter (<code>now = new Date()</code>), so tests can fix the clock:</p>
+<pre><code>expect(isSlotClosed("2026-10-31", "11:20", new Date("2026-10-31T05:30:00Z"))).toBe(true);</code></pre>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Tell me about a bug your testing found.</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Fresh-clone install failure:</b> <code>npm install</code> failed on a new machine because the Prisma config required <code>DATABASE_URL</code> before the developer had created the env file. It worked on my laptop only because my env file existed. Fixed by reading the variable lazily.</li>
+<li><b>Greedy planner:</b> caught by a unit test.</li>
+<li><b>Flaky E2E test:</b> the wizard smooth-scrolls on each step, so a click computed mid-scroll landed in the wrong place. Switched to Puppeteer locators, which wait for elements to be stable. A test bug, not an app bug.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">What would you test next, and how would you set up CI?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Integration tests</b> against a real test database (Postgres service in CI), especially concurrent booking: 10 parallel requests for one slot, exactly one succeeds.</li>
+<li><b>Component tests</b> with React Testing Library for the wizard steps.</li>
+<li><b>Playwright</b> E2E tests committed to the repo.</li>
+<li><b>GitHub Actions</b> on every PR: <code>npm ci</code> → lint → tests → build → E2E. Block merging on failure.</li>
+</ul>
+</div></details>
+</section>
+
+<!-- ============================================================ 12 -->
+<section class="cat" id="s-git" data-title="Git & tooling">
+<h2>12. Git, tooling &amp; code quality</h2>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How did you keep a clean commit history?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Small commits, one logical change each, using <b>Conventional Commits</b>:</p>
+<pre><code>feat(db): add Prisma schema and initial migration
+refactor(shared): move business rules into a plain-JavaScript workspace
+feat(server): add Express 5 REST API in JavaScript
+feat(client): rebuild the frontend as a React 19 + Vite SPA
+chore: switch to npm workspaces and remove the Next.js/TypeScript setup
+docs: update README and Windows setup guide for React + Express</code></pre>
+<p>The prefix says the type, the scope the area, and the body explains <i>why</i>. When files moved folders, I committed each deletion together with its new location, so git records a <b>rename</b> and keeps the file's history.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">The GitHub repo already had a commit. How did you push without force?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>GitHub had created an "Initial commit" with a one-line README. Force-pushing would have deleted it. Instead I fetched it and replayed my commits on top:</p>
+<pre><code>git fetch origin
+git rebase -X theirs origin/main
+git push -u origin main      # fast-forward, no --force</code></pre>
+<p>I made a backup branch first and checked the final files were identical (0-line diff). <b>Merge vs rebase:</b> merge keeps both histories plus a merge commit; rebase rewrites commits onto a new base for a linear history. Never rebase commits others already pulled.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What tooling enforces code quality?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>ESLint</b> (flat config, <code>eslint.config.js</code>): JavaScript recommended rules + React Hooks rules for the client, Node globals for the server.</li>
+<li><b>Prettier</b> with the Tailwind plugin: consistent formatting and sorted class names.</li>
+<li><b>Vitest</b>: one <code>npm test</code> runs shared and server tests.</li>
+<li><b><code>.gitattributes</code></b> (<code>eol=lf</code>): avoids Windows CRLF line-ending noise.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What's in <code>.gitignore</code>, and why commit <code>package-lock.json</code>?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><code>node_modules/</code>: recreated by <code>npm install</code>.</li>
+<li><code>dist/</code>: build output.</li>
+<li><code>.env</code>, <code>.env.*</code> except <code>.env.example</code>: secrets.</li>
+</ul>
+<p><code>package-lock.json</code> <b>is</b> committed so every machine (and CI, and the deploy servers) installs exactly the same versions.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is <code>docker-compose.yml</code> for?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>It defines a PostgreSQL 17 container with a health check and a persistent volume. <code>docker compose up -d</code> gives any developer the expected database, with credentials matching <code>server/.env.example</code>. It's optional; installed PostgreSQL works too.</p>
+</div></details>
+</section>
+
+<!-- ============================================================ 13 -->
+<section class="cat" id="s-deploy" data-title="Deployment">
+<h2>13. Deployment &amp; production</h2>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How do you deploy this app?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Three pieces, each on a service suited to it:</p>
+<table>
+<tr><th>Part</th><th>Host</th><th>How</th></tr>
+<tr><td>Website (static files)</td><td>Vercel</td><td><code>vercel.json</code> builds <code>client/dist</code>; env <code>VITE_API_URL</code></td></tr>
+<tr><td>API (Node process)</td><td>Render</td><td><code>render.yaml</code>: install, <code>db:deploy</code>, <code>npm start</code>, health check <code>/api/health</code>; env <code>DATABASE_URL</code>, <code>CLIENT_ORIGIN</code></td></tr>
+<tr><td>Database</td><td>Neon (managed Postgres)</td><td>Run migrations and seed once</td></tr>
+</table>
+<p>The website is just static files, so a CDN can serve it; the API needs a long-running Node server, so it goes to Render.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">Why does <code>vercel.json</code> rewrite every URL to <code>index.html</code>?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>In a single-page app, routes like <code>/gallery</code> exist only in React Router, not as files. If a user refreshes <code>/gallery</code> or opens a shared link, the server must return <code>index.html</code> so React can load and render the right page. Without the rewrite, Vercel would return a 404.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What production issues do you expect on free hosting?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Cold starts:</b> Render's free plan sleeps when idle, so the first request can take ~30 s. The UI shows a loading state; a paid plan or a keep-alive ping fixes it.</li>
+<li><b>CORS mismatches:</b> if the Vercel URL changes, update <code>CLIENT_ORIGIN</code>.</li>
+<li><b>Database connections:</b> use Neon's pooled connection string.</li>
+<li><b>In-memory rate limits</b> reset on every restart.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">How would you handle a schema change in production?</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<ol>
+<li>Edit <code>schema.prisma</code>, run <code>npm run db:migrate</code>, review the generated SQL, commit it.</li>
+<li>On deploy, <code>prisma migrate deploy</code> applies only pending migrations (it's in the Render build command).</li>
+<li>For risky changes: <b>expand → migrate → contract</b>. Add the new column, backfill, switch the code, then drop the old column in a later release.</li>
+</ol>
+</div></details>
+</section>
+
+<!-- ============================================================ 14 -->
+<section class="cat" id="s-scale" data-title="System design & scaling">
+<h2>14. System design &amp; scaling</h2>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">How would you integrate a real payment gateway like Razorpay?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<ol>
+<li><code>POST /api/booking</code> creates the PENDING hold, then a <b>gateway order</b> on the server for the server-computed amount.</li>
+<li>The frontend opens the gateway checkout with that order id.</li>
+<li>The gateway calls our <b>webhook</b>; we <b>verify its signature</b>, then run the existing confirm logic.</li>
+<li>Never trust the browser's "success" callback alone.</li>
+<li>The unique <code>paymentRef</code> makes duplicate webhooks idempotent.</li>
+<li>If payment succeeds after the hold expired, refund automatically.</li>
+</ol>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">How would you expire holds without lazy expiry?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<p>A scheduled job (Render cron job or a queue worker) every minute:</p>
+<pre><code>UPDATE "Booking" SET status='EXPIRED', "activeSlotKey"=NULL
+WHERE status='PENDING' AND "holdExpiresAt" &lt;= now();</code></pre>
+<p>The <code>(status, holdExpiresAt)</code> index makes it fast. Keep the lazy checks too, so correctness doesn't depend on the job.</p>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">The site goes viral. What breaks first?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>The website</b> is static files on a CDN: fine.</li>
+<li><b>The API</b>: run several instances behind a load balancer; move rate limiting to Redis.</li>
+<li><b>Availability endpoint</b> (hottest): short cache (5–10 s) per location+date, read replicas.</li>
+<li><b>Database connections</b>: a connection pooler.</li>
+<li><b>Booking writes</b>: the unique constraint stays correct under any load.</li>
+<li><b>Observability</b>: metrics, tracing and alerts to find the real bottleneck.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="a"><summary><span class="qn"></span><span class="qt">Optimistic vs pessimistic locking: which does your design use?</span><span class="lvl a">Advanced</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Pessimistic:</b> lock the row first (<code>SELECT … FOR UPDATE</code>); others wait.</li>
+<li><b>Optimistic:</b> don't lock; detect conflicts when writing.</li>
+</ul>
+<p>Mine is <b>optimistic</b>: insert and let the unique constraint reject conflicts; confirm uses <code>updateMany … WHERE status='PENDING'</code> and checks <code>count</code>. That suits low contention, which is our case.</p>
+</div></details>
+</section>
+
+<!-- ============================================================ 15 -->
+<section class="cat" id="s-fund" data-title="Fundamentals">
+<h2>15. Fundamentals freshers must know</h2>
+<p class="intro">General questions, answered with examples from this project.</p>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What happens when you type a URL and press Enter (for this app)?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ol>
+<li>DNS resolves the domain; a TCP + TLS connection opens.</li>
+<li>Vercel's CDN returns <code>index.html</code> and the JS/CSS bundles.</li>
+<li>React starts; React Router matches the URL and runs the page's <b>loader</b>.</li>
+<li>The loader calls the Express API, which queries PostgreSQL and returns JSON.</li>
+<li>React renders the page with that data.</li>
+</ol>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">GET vs POST? PUT, PATCH, DELETE?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>GET</b> reads, has no body, is safe and cacheable: <code>GET /api/slots</code>.</li>
+<li><b>POST</b> creates or performs an action: <code>POST /api/booking</code>.</li>
+<li><b>PUT</b> replaces, <b>PATCH</b> partially updates, <b>DELETE</b> removes.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is REST?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>An API style built around <b>resources</b> in URLs (<code>/api/booking</code>), standard <b>HTTP methods</b>, meaningful <b>status codes</b>, and <b>stateless</b> requests (each carries everything the server needs). JSON is the usual format. The Express server is a REST API.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">SQL vs NoSQL: why SQL here?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>The data is <b>relational</b> (theatre → slots → bookings → items) and needs <b>constraints and transactions</b> (no double booking; payment + coupon together). NoSQL suits flexible documents or massive horizontal scale where joins and transactions matter less.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is a JOIN? Primary key vs foreign key vs unique key?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<pre><code>SELECT b.reference, t.name AS theatre, b.total / 100 AS total_rs
+FROM "Booking" b JOIN "Theater" t ON t.id = b."theaterId"
+WHERE b.status = 'CONFIRMED';</code></pre>
+<ul>
+<li><b>Primary key</b>: unique row id (<code>Booking.id</code>).</li>
+<li><b>Foreign key</b>: references another table (<code>Booking.theaterId → Theater.id</code>).</li>
+<li><b>Unique key</b>: no duplicates in that column (<code>Coupon.code</code>, <code>Booking.activeSlotKey</code>).</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">localStorage vs sessionStorage vs cookies?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<table>
+<tr><th></th><th>localStorage</th><th>sessionStorage</th><th>Cookie</th></tr>
+<tr><td>Lifetime</td><td>Until cleared</td><td>Until the tab closes</td><td>Until expiry</td></tr>
+<tr><td>Sent to server?</td><td>No</td><td>No</td><td>Yes, every request</td></tr>
+<tr><td>Use</td><td>Preferences</td><td>Per-tab drafts (<b>my wizard</b>)</td><td>Auth sessions (HttpOnly, Secure)</td></tr>
+</table>
+<p>Never put auth tokens in localStorage, because XSS can read it.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Authentication vs authorization? JWT vs session?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Authentication:</b> who are you? <b>Authorization:</b> what may you do?</li>
+<li><b>Session:</b> the server stores session data; the cookie holds an id. Easy to revoke.</li>
+<li><b>JWT:</b> a signed token with claims; the server stores nothing. Harder to revoke.</li>
+</ul>
+<p>Not in this project yet. I'd add HttpOnly session cookies (with <code>credentials</code> in CORS) and check booking ownership on the server.</p>
+</div></details>
+
+<details class="qa" data-level="i"><summary><span class="qn"></span><span class="qt">What is a race condition? Give an example from this project.</span><span class="lvl i">Intermediate</span><span class="chev">▸</span></summary><div class="ans">
+<p>A bug where the result depends on the timing of concurrent operations.</p>
+<ul>
+<li><b>Server:</b> two users booking the same slot at once. Solved with the unique constraint.</li>
+<li><b>Client:</b> an old availability response arriving after a newer one. Solved with AbortController and a request key.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What is the Node.js event loop, in simple terms?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Node runs your JavaScript on <b>one thread</b>. When code awaits something slow (a database query, a network call), Node hands it off and keeps serving other requests; when the result is ready, the callback or <code>await</code> continues. That's why one Express server can handle many requests at once, as long as you don't block the thread with heavy synchronous work.</p>
+</div></details>
+</section>
+
+<!-- ============================================================ 16 -->
+<section class="cat" id="s-hr" data-title="Behavioural">
+<h2>16. Behavioural questions about the project</h2>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Tell me about a time you changed direction mid-project.</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Use <b>STAR</b>. <b>Situation:</b> I'd finished the app in Next.js and TypeScript. <b>Task:</b> I decided to move to plain React and a separate Express API in JavaScript. <b>Action:</b> I kept the API contract and business rules identical, converted the code with a type-stripping tool plus manual fixes, and re-ran all unit, API and browser tests. <b>Result:</b> every feature still worked, verified on desktop and mobile and with a fresh clone, and the git history shows the change clearly.</p>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Tell me about a bug you found and fixed.</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li><b>Fresh-clone install failure:</b> found by testing as a new developer.</li>
+<li><b>Greedy planner:</b> found by a unit test; fixed with a two-pass algorithm.</li>
+<li><b>Misleading receipt text:</b> it said "confirmation email sent", but no email is sent, so I changed the copy.</li>
+<li><b>Focus hidden under the sticky header:</b> found by a browser test; fixed with <code>scroll-padding-top</code>.</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">How did you plan the 7-day deadline?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ol>
+<li>Read the spec and listed gaps (missing tables, unclear rules).</li>
+<li>Backend first: schema → business rules with tests → APIs, verified with curl.</li>
+<li>Frontend page by page on top of stable APIs, committing each feature.</li>
+<li>Browser testing at 3 screen sizes, a production build, then docs and a fresh-clone test.</li>
+</ol>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">What did you learn from this project?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<ul>
+<li>Enforce critical rules (like no double booking) in the <b>database</b>, not only in code.</li>
+<li>Never trust the client for prices or validation.</li>
+<li>Keep business logic separate from frameworks: it made switching from Next.js to React + Express much easier.</li>
+<li>Always test a production build and a fresh clone; "works on my machine" isn't enough.</li>
+<li>Be honest about limitations (simulated payment, rules-based "AI", no SSR).</li>
+</ul>
+</div></details>
+
+<details class="qa" data-level="b"><summary><span class="qn"></span><span class="qt">Did you use AI tools? How?</span><span class="lvl b">Basic</span><span class="chev">▸</span></summary><div class="ans">
+<p>Answer truthfully, because interviewers will probe. A good answer shows <b>you understand and own the code</b>: you can explain every file, you reviewed and tested what was generated, and you can change it yourself. Study the sections above until you can explain each decision without notes. That's what this page is for.</p>
+</div></details>
+</section>
+
+<div id="empty">No questions match your search.</div>
+  </main>
+</div>
+
+<script>
+(() => {
+  const qas = [...document.querySelectorAll("details.qa")];
+  const sections = [...document.querySelectorAll("section.cat")];
+  let level = "all";
+
+  // Number questions and add per-section counts.
+  qas.forEach((d, i) => (d.querySelector(".qn").textContent = "Q" + (i + 1)));
+  const toc = document.getElementById("toc");
+  sections.forEach((s) => {
+    const n = s.querySelectorAll("details.qa").length;
+    s.querySelector("h2").insertAdjacentHTML("beforeend", ` <span class="count">${n} questions</span>`);
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="#${s.id}"><span>${s.dataset.title}</span><span class="n">${n}</span></a>`;
+    toc.appendChild(li);
+  });
+
+  const count = (l) => qas.filter((d) => d.dataset.level === l).length;
+  document.getElementById("stats").innerHTML =
+    `<div class="stat"><b>${qas.length}</b> questions</div>` +
+    `<div class="stat"><b>${count("b")}</b> basic</div>` +
+    `<div class="stat"><b>${count("i")}</b> intermediate</div>` +
+    `<div class="stat"><b>${count("a")}</b> advanced</div>` +
+    `<div class="stat"><b>${sections.length}</b> sections</div>`;
+
+  const input = document.getElementById("q");
+  function apply() {
+    const term = input.value.trim().toLowerCase();
+    let visible = 0;
+    qas.forEach((d) => {
+      const okLevel = level === "all" || d.dataset.level === level;
+      const okTerm = !term || d.textContent.toLowerCase().includes(term);
+      const show = okLevel && okTerm;
+      d.classList.toggle("hidden", !show);
+      if (show) visible++;
+      if (term && show) d.open = true;
+    });
+    sections.forEach((s) => s.classList.toggle("hidden", !s.querySelector("details.qa:not(.hidden)")));
+    document.getElementById("empty").style.display = visible ? "none" : "block";
+  }
+  input.addEventListener("input", apply);
+
+  document.querySelectorAll("button[data-level]").forEach((b) =>
+    b.addEventListener("click", () => {
+      level = b.dataset.level;
+      document.querySelectorAll("button[data-level]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      apply();
+    }),
+  );
+  document.getElementById("expand").onclick = () => qas.forEach((d) => !d.classList.contains("hidden") && (d.open = true));
+  document.getElementById("collapse").onclick = () => qas.forEach((d) => (d.open = false));
+
+  const root = document.documentElement;
+  try { const t = localStorage.getItem("prep-theme"); if (t) root.dataset.theme = t; } catch {}
+  document.getElementById("theme").onclick = () => {
+    const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("prep-theme", root.dataset.theme); } catch {}
+  };
+})();
+</script>
+</body>
+</html>
